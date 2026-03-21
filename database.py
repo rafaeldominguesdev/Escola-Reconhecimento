@@ -1,16 +1,18 @@
 import sqlite3
-import os
 
 DB_NAME = "escola.db"
+
 
 def conectar():
     """Cria e retorna uma conexão com o banco de dados SQLite."""
     return sqlite3.connect(DB_NAME)
 
+
 def criar_tabelas():
-    """Verifica e cria a tabela de alunos caso ainda não exista."""
+    """Verifica e cria as tabelas de alunos e registros caso ainda não existam."""
     conn = conectar()
     cursor = conn.cursor()
+
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS alunos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,17 +25,34 @@ def criar_tabelas():
             pasta_fotos TEXT NOT NULL
         )
     ''')
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS registros (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            aluno_id INTEGER NOT NULL,
+            data TEXT NOT NULL,
+            hora TEXT NOT NULL,
+            tipo TEXT NOT NULL,
+            FOREIGN KEY (aluno_id) REFERENCES alunos (id)
+        )
+    ''')
+
     conn.commit()
     conn.close()
+
 
 def verifica_aluno_existe(turma, numero_chamada):
     """Verifica se já existe um aluno cadastrado nesta turma com este número."""
     conn = conectar()
     cursor = conn.cursor()
-    cursor.execute('SELECT id FROM alunos WHERE turma = ? AND numero_chamada = ?', (turma, numero_chamada))
+    cursor.execute(
+        'SELECT id FROM alunos WHERE turma = ? AND numero_chamada = ?',
+        (turma, numero_chamada)
+    )
     resultado = cursor.fetchone()
     conn.close()
     return resultado is not None
+
 
 def inserir_aluno_inicial(nome, turma, numero_chamada, nome_responsavel, email, telefone):
     """
@@ -43,13 +62,22 @@ def inserir_aluno_inicial(nome, turma, numero_chamada, nome_responsavel, email, 
     conn = conectar()
     cursor = conn.cursor()
     cursor.execute('''
-        INSERT INTO alunos (nome, turma, numero_chamada, nome_responsavel, email_responsavel, telefone_responsavel, pasta_fotos)
+        INSERT INTO alunos (
+            nome,
+            turma,
+            numero_chamada,
+            nome_responsavel,
+            email_responsavel,
+            telefone_responsavel,
+            pasta_fotos
+        )
         VALUES (?, ?, ?, ?, ?, ?, ?)
     ''', (nome, turma, numero_chamada, nome_responsavel, email, telefone, ""))
     id_gerado = cursor.lastrowid
     conn.commit()
     conn.close()
     return id_gerado
+
 
 def atualizar_pasta_fotos(id_aluno, pasta_fotos):
     """Atualiza o caminho da pasta de fotos do aluno após a criação da pasta."""
@@ -59,6 +87,7 @@ def atualizar_pasta_fotos(id_aluno, pasta_fotos):
     conn.commit()
     conn.close()
 
+
 def excluir_aluno(id_aluno):
     """Exclui um aluno caso o cadastro ou captura de fotos falhe."""
     conn = conectar()
@@ -67,26 +96,59 @@ def excluir_aluno(id_aluno):
     conn.commit()
     conn.close()
 
+
 def buscar_aluno_por_id(id_aluno):
     """Busca nome, turma e número da chamada de um aluno específico pelo seu ID."""
     conn = conectar()
     cursor = conn.cursor()
-    cursor.execute('SELECT nome, turma, numero_chamada FROM alunos WHERE id = ?', (id_aluno,))
+    cursor.execute(
+        'SELECT nome, turma, numero_chamada FROM alunos WHERE id = ?',
+        (id_aluno,)
+    )
     resultado = cursor.fetchone()
     conn.close()
     return resultado
 
+
 def listar_alunos():
-    """Retorna uma lista de strings formatadas com todos os alunos cadastrados."""
+    """Retorna uma lista formatada com todos os alunos cadastrados."""
     conn = conectar()
     cursor = conn.cursor()
     cursor.execute('SELECT id, nome, turma, numero_chamada FROM alunos ORDER BY turma, numero_chamada')
     alunos = cursor.fetchall()
     conn.close()
-    
+
     lista_formatada = []
     for aluno in alunos:
         id_aluno, nome, turma, numero = aluno
         lista_formatada.append(f"[ID: {id_aluno}] {nome} - Turma {turma} - Nº {numero}")
-    
+
     return lista_formatada
+
+
+def buscar_ultimo_registro(id_aluno, data):
+    """Busca o último tipo de registro do aluno no dia informado."""
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute('''
+        SELECT tipo
+        FROM registros
+        WHERE aluno_id = ? AND data = ?
+        ORDER BY id DESC
+        LIMIT 1
+    ''', (id_aluno, data))
+    resultado = cursor.fetchone()
+    conn.close()
+    return resultado[0] if resultado else None
+
+
+def registrar_ponto(id_aluno, data, hora, tipo):
+    """Registra ENTRADA ou SAIDA na tabela de registros."""
+    conn = conectar()
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO registros (aluno_id, data, hora, tipo)
+        VALUES (?, ?, ?, ?)
+    ''', (id_aluno, data, hora, tipo))
+    conn.commit()
+    conn.close()
