@@ -1,14 +1,12 @@
 from pathlib import Path
 from typing import Any, Optional
 import os
+import mimetypes
 
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
 
-# =========================
-# CONFIG
-# =========================
 env_path = Path(__file__).resolve().parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
@@ -20,10 +18,9 @@ if not url or not key:
 
 supabase: Client = create_client(url, key)
 
+BUCKET_FOTOS = "fotos-alunos"
 
-# =========================
-# HELPERS
-# =========================
+
 def _limpar_none(dados: dict) -> dict:
     return {k: v for k, v in dados.items() if v is not None}
 
@@ -32,14 +29,7 @@ def _primeiro(lista):
     return lista[0] if lista else None
 
 
-# =========================
-# COMPATIBILIDADE
-# =========================
 def criar_tabelas():
-    """
-    Mantida só para compatibilidade com código antigo.
-    No Supabase, as tabelas já devem existir no banco.
-    """
     return True
 
 
@@ -56,11 +46,6 @@ def buscar_aluno_por_id(aluno_id: int):
     return _primeiro(resp.data or [])
 
 
-def buscar_aluno_por_nome(nome: str):
-    resp = supabase.table("alunos").select("*").ilike("nome", nome).execute()
-    return resp.data or []
-
-
 def inserir_aluno(nome: str, turma: Optional[str] = None, foto_path: Optional[str] = None):
     dados = _limpar_none({
         "nome": nome,
@@ -68,6 +53,17 @@ def inserir_aluno(nome: str, turma: Optional[str] = None, foto_path: Optional[st
         "foto_path": foto_path
     })
     resp = supabase.table("alunos").insert(dados).execute()
+    return _primeiro(resp.data or [])
+
+
+def atualizar_foto_aluno(aluno_id: int, foto_path: str):
+    resp = (
+        supabase
+        .table("alunos")
+        .update({"foto_path": foto_path})
+        .eq("id", aluno_id)
+        .execute()
+    )
     return _primeiro(resp.data or [])
 
 
@@ -80,12 +76,6 @@ def inserir_aluno_inicial(
     email: Optional[str] = None,
     **kwargs: Any
 ):
-    """
-    Função compatível com código antigo.
-    Cria aluno e, se vierem dados do responsável, já cria e vincula.
-    """
-
-    # aceita nomes alternativos vindos do app antigo
     foto_path = (
         foto_path
         or kwargs.get("caminho_foto")
@@ -151,7 +141,7 @@ def buscar_responsavel_por_id(responsavel_id: int):
 
 
 # =========================
-# VÍNCULO ALUNO <-> RESPONSÁVEL
+# VÍNCULO
 # =========================
 def vincular_aluno_responsavel(aluno_id: int, responsavel_id: int):
     dados = {
@@ -173,7 +163,7 @@ def buscar_responsaveis_do_aluno(aluno_id: int):
 
 
 # =========================
-# REGISTROS DE ENTRADA / SAÍDA
+# REGISTROS
 # =========================
 def registrar_evento(
     aluno_id: int,
@@ -243,3 +233,35 @@ def marcar_mensagem_enviada(registro_id: int, enviado: bool = True):
         .execute()
     )
     return _primeiro(resp.data or [])
+
+
+# =========================
+# STORAGE
+# =========================
+def upload_foto_aluno(aluno_id: int, caminho_arquivo: str, nome_arquivo: Optional[str] = None):
+    if not os.path.exists(caminho_arquivo):
+        raise FileNotFoundError(f"Arquivo não encontrado: {caminho_arquivo}")
+
+    extensao = os.path.splitext(caminho_arquivo)[1].lower() or ".jpg"
+    if nome_arquivo is None:
+        nome_arquivo = f"principal{extensao}"
+
+    storage_path = f"alunos/{aluno_id}/{nome_arquivo}"
+    content_type = mimetypes.guess_type(caminho_arquivo)[0] or "image/jpeg"
+
+    with open(caminho_arquivo, "rb") as f:
+        supabase.storage.from_(BUCKET_FOTOS).upload(
+            path=storage_path,
+            file=f,
+            file_options={
+                "content-type": content_type,
+                "upsert": "true"
+            }
+        )
+
+    atualizar_foto_aluno(aluno_id, storage_path)
+    return storage_path
+
+
+def obter_url_publica_foto(foto_path: str):
+    return supabase.storage.from_(BUCKET_FOTOS).get_public_url(foto_path)

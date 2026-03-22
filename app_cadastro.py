@@ -6,7 +6,8 @@ import os
 from database import (  # type: ignore
     criar_tabelas,
     inserir_aluno_inicial,
-    listar_alunos
+    listar_alunos,
+    upload_foto_aluno
 )
 
 
@@ -77,8 +78,6 @@ class AppCadastro:
             messagebox.showwarning("Aviso", "Preencha todos os campos do formulário!")
             return
 
-        # O número da chamada está sendo mantido só na interface por enquanto.
-        # Ele ainda não está salvo no Supabase.
         if numero_str and not numero_str.isdigit():
             messagebox.showwarning("Aviso", "O número da chamada deve conter apenas números inteiros!")
             return
@@ -115,6 +114,7 @@ class AppCadastro:
 
         fotos_capturadas = 0
         total_fotos = 10
+        primeira_foto = None
 
         messagebox.showinfo(
             "Câmera Pronta",
@@ -142,6 +142,9 @@ class AppCadastro:
             caminho_foto = os.path.join(pasta_aluno, f"{fotos_capturadas + 1}.jpg")
             cv2.imwrite(caminho_foto, frame)
 
+            if primeira_foto is None:
+                primeira_foto = caminho_foto
+
             fotos_capturadas += 1
 
             if cv2.waitKey(500) & 0xFF == ord('q'):
@@ -151,14 +154,26 @@ class AppCadastro:
         cv2.destroyAllWindows()
 
         if fotos_capturadas > 0:
+            aviso_upload = ""
+
+            try:
+                if primeira_foto:
+                    upload_foto_aluno(id_aluno, primeira_foto, "principal.jpg")
+                    aviso_upload = "\nFoto principal enviada para o Supabase Storage."
+            except Exception as e:
+                aviso_upload = f"\nUpload para o Supabase falhou: {e}"
+
             messagebox.showinfo(
                 "Sucesso",
                 f"Cadastro do aluno ID {id_aluno} realizado com sucesso!\n"
-                f"{fotos_capturadas} fotos salvas em {pasta_aluno}."
+                f"{fotos_capturadas} fotos salvas em {pasta_aluno}.{aviso_upload}"
             )
             self.limpar_campos()
         else:
-            messagebox.showwarning("Aviso", "Nenhuma foto foi capturada, mas o aluno já foi cadastrado no banco.")
+            messagebox.showwarning(
+                "Aviso",
+                "Nenhuma foto foi capturada, mas o aluno já foi cadastrado no banco."
+            )
 
     def mostrar_lista_alunos(self):
         alunos = listar_alunos()
@@ -167,13 +182,13 @@ class AppCadastro:
             return
 
         texto_lista = "\n".join(
-            f'ID: {a["id"]} | Nome: {a["nome"]} | Turma: {a.get("turma", "")}'
+            f'ID: {a["id"]} | Nome: {a["nome"]} | Turma: {a.get("turma", "")} | Foto: {a.get("foto_path", "")}'
             for a in alunos
         )
 
         janela_lista = tk.Toplevel(self.root)
         janela_lista.title("Alunos Cadastrados")
-        janela_lista.geometry("500x400")
+        janela_lista.geometry("700x400")
 
         tk.Label(janela_lista, text="Lista de Alunos", font=("Arial", 14, "bold")).pack(pady=10)
 
