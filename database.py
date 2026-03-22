@@ -1,154 +1,245 @@
-import sqlite3
+from pathlib import Path
+from typing import Any, Optional
+import os
 
-DB_NAME = "escola.db"
-
-
-def conectar():
-    """Cria e retorna uma conexão com o banco de dados SQLite."""
-    return sqlite3.connect(DB_NAME)
+from dotenv import load_dotenv
+from supabase import create_client, Client
 
 
+# =========================
+# CONFIG
+# =========================
+env_path = Path(__file__).resolve().parent / ".env"
+load_dotenv(dotenv_path=env_path)
+
+url = os.getenv("SUPABASE_URL")
+key = os.getenv("SUPABASE_KEY")
+
+if not url or not key:
+    raise ValueError("SUPABASE_URL ou SUPABASE_KEY não encontrados no .env")
+
+supabase: Client = create_client(url, key)
+
+
+# =========================
+# HELPERS
+# =========================
+def _limpar_none(dados: dict) -> dict:
+    return {k: v for k, v in dados.items() if v is not None}
+
+
+def _primeiro(lista):
+    return lista[0] if lista else None
+
+
+# =========================
+# COMPATIBILIDADE
+# =========================
 def criar_tabelas():
-    """Verifica e cria as tabelas de alunos e registros caso ainda não existam."""
-    conn = conectar()
-    cursor = conn.cursor()
-
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS alunos (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            nome TEXT NOT NULL,
-            turma TEXT NOT NULL,
-            numero_chamada INTEGER NOT NULL,
-            nome_responsavel TEXT NOT NULL,
-            email_responsavel TEXT NOT NULL,
-            telefone_responsavel TEXT NOT NULL,
-            pasta_fotos TEXT NOT NULL
-        )
-    ''')
-
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS registros (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            aluno_id INTEGER NOT NULL,
-            data TEXT NOT NULL,
-            hora TEXT NOT NULL,
-            tipo TEXT NOT NULL,
-            FOREIGN KEY (aluno_id) REFERENCES alunos (id)
-        )
-    ''')
-
-    conn.commit()
-    conn.close()
-
-
-def verifica_aluno_existe(turma, numero_chamada):
-    """Verifica se já existe um aluno cadastrado nesta turma com este número."""
-    conn = conectar()
-    cursor = conn.cursor()
-    cursor.execute(
-        'SELECT id FROM alunos WHERE turma = ? AND numero_chamada = ?',
-        (turma, numero_chamada)
-    )
-    resultado = cursor.fetchone()
-    conn.close()
-    return resultado is not None
-
-
-def inserir_aluno_inicial(nome, turma, numero_chamada, nome_responsavel, email, telefone):
     """
-    Insere o aluno sem a pasta de fotos para gerar o ID automaticamente.
-    Retorna o ID gerado (AUTOINCREMENT).
+    Mantida só para compatibilidade com código antigo.
+    No Supabase, as tabelas já devem existir no banco.
     """
-    conn = conectar()
-    cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO alunos (
-            nome,
-            turma,
-            numero_chamada,
-            nome_responsavel,
-            email_responsavel,
-            telefone_responsavel,
-            pasta_fotos
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    ''', (nome, turma, numero_chamada, nome_responsavel, email, telefone, ""))
-    id_gerado = cursor.lastrowid
-    conn.commit()
-    conn.close()
-    return id_gerado
+    return True
 
 
-def atualizar_pasta_fotos(id_aluno, pasta_fotos):
-    """Atualiza o caminho da pasta de fotos do aluno após a criação da pasta."""
-    conn = conectar()
-    cursor = conn.cursor()
-    cursor.execute('UPDATE alunos SET pasta_fotos = ? WHERE id = ?', (pasta_fotos, id_aluno))
-    conn.commit()
-    conn.close()
-
-
-def excluir_aluno(id_aluno):
-    """Exclui um aluno caso o cadastro ou captura de fotos falhe."""
-    conn = conectar()
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM alunos WHERE id = ?', (id_aluno,))
-    conn.commit()
-    conn.close()
-
-
-def buscar_aluno_por_id(id_aluno):
-    """Busca nome, turma e número da chamada de um aluno específico pelo seu ID."""
-    conn = conectar()
-    cursor = conn.cursor()
-    cursor.execute(
-        'SELECT nome, turma, numero_chamada FROM alunos WHERE id = ?',
-        (id_aluno,)
-    )
-    resultado = cursor.fetchone()
-    conn.close()
-    return resultado
-
-
+# =========================
+# ALUNOS
+# =========================
 def listar_alunos():
-    """Retorna uma lista formatada com todos os alunos cadastrados."""
-    conn = conectar()
-    cursor = conn.cursor()
-    cursor.execute('SELECT id, nome, turma, numero_chamada FROM alunos ORDER BY turma, numero_chamada')
-    alunos = cursor.fetchall()
-    conn.close()
-
-    lista_formatada = []
-    for aluno in alunos:
-        id_aluno, nome, turma, numero = aluno
-        lista_formatada.append(f"[ID: {id_aluno}] {nome} - Turma {turma} - Nº {numero}")
-
-    return lista_formatada
+    resp = supabase.table("alunos").select("*").order("id").execute()
+    return resp.data or []
 
 
-def buscar_ultimo_registro(id_aluno, data):
-    """Busca o último tipo de registro do aluno no dia informado."""
-    conn = conectar()
-    cursor = conn.cursor()
-    cursor.execute('''
-        SELECT tipo
-        FROM registros
-        WHERE aluno_id = ? AND data = ?
-        ORDER BY id DESC
-        LIMIT 1
-    ''', (id_aluno, data))
-    resultado = cursor.fetchone()
-    conn.close()
-    return resultado[0] if resultado else None
+def buscar_aluno_por_id(aluno_id: int):
+    resp = supabase.table("alunos").select("*").eq("id", aluno_id).limit(1).execute()
+    return _primeiro(resp.data or [])
 
 
-def registrar_ponto(id_aluno, data, hora, tipo):
-    """Registra ENTRADA ou SAIDA na tabela de registros."""
-    conn = conectar()
-    cursor = conn.cursor()
-    cursor.execute('''
-        INSERT INTO registros (aluno_id, data, hora, tipo)
-        VALUES (?, ?, ?, ?)
-    ''', (id_aluno, data, hora, tipo))
-    conn.commit()
-    conn.close()
+def buscar_aluno_por_nome(nome: str):
+    resp = supabase.table("alunos").select("*").ilike("nome", nome).execute()
+    return resp.data or []
+
+
+def inserir_aluno(nome: str, turma: Optional[str] = None, foto_path: Optional[str] = None):
+    dados = _limpar_none({
+        "nome": nome,
+        "turma": turma,
+        "foto_path": foto_path
+    })
+    resp = supabase.table("alunos").insert(dados).execute()
+    return _primeiro(resp.data or [])
+
+
+def inserir_aluno_inicial(
+    nome: str,
+    turma: Optional[str] = None,
+    foto_path: Optional[str] = None,
+    responsavel_nome: Optional[str] = None,
+    responsavel_telefone: Optional[str] = None,
+    email: Optional[str] = None,
+    **kwargs: Any
+):
+    """
+    Função compatível com código antigo.
+    Cria aluno e, se vierem dados do responsável, já cria e vincula.
+    """
+
+    # aceita nomes alternativos vindos do app antigo
+    foto_path = (
+        foto_path
+        or kwargs.get("caminho_foto")
+        or kwargs.get("foto")
+        or kwargs.get("imagem")
+    )
+
+    responsavel_nome = (
+        responsavel_nome
+        or kwargs.get("responsavel")
+        or kwargs.get("nome_responsavel")
+    )
+
+    responsavel_telefone = (
+        responsavel_telefone
+        or kwargs.get("telefone")
+        or kwargs.get("telefone_responsavel")
+    )
+
+    email = (
+        email
+        or kwargs.get("responsavel_email")
+        or kwargs.get("email_responsavel")
+    )
+
+    aluno = inserir_aluno(nome=nome, turma=turma, foto_path=foto_path)
+    if not aluno:
+        return None
+
+    if responsavel_nome and responsavel_telefone:
+        responsavel = inserir_responsavel(
+            nome=responsavel_nome,
+            telefone=responsavel_telefone,
+            email=email
+        )
+        if responsavel:
+            vincular_aluno_responsavel(aluno["id"], responsavel["id"])
+
+    return aluno
+
+
+# =========================
+# RESPONSÁVEIS
+# =========================
+def listar_responsaveis():
+    resp = supabase.table("responsaveis").select("*").order("id").execute()
+    return resp.data or []
+
+
+def inserir_responsavel(nome: str, telefone: str, email: Optional[str] = None):
+    dados = _limpar_none({
+        "nome": nome,
+        "telefone": telefone,
+        "email": email
+    })
+    resp = supabase.table("responsaveis").insert(dados).execute()
+    return _primeiro(resp.data or [])
+
+
+def buscar_responsavel_por_id(responsavel_id: int):
+    resp = supabase.table("responsaveis").select("*").eq("id", responsavel_id).limit(1).execute()
+    return _primeiro(resp.data or [])
+
+
+# =========================
+# VÍNCULO ALUNO <-> RESPONSÁVEL
+# =========================
+def vincular_aluno_responsavel(aluno_id: int, responsavel_id: int):
+    dados = {
+        "aluno_id": aluno_id,
+        "responsavel_id": responsavel_id
+    }
+    resp = supabase.table("aluno_responsavel").insert(dados).execute()
+    return _primeiro(resp.data or [])
+
+
+def buscar_responsaveis_do_aluno(aluno_id: int):
+    vinculos = supabase.table("aluno_responsavel").select("*").eq("aluno_id", aluno_id).execute().data or []
+    if not vinculos:
+        return []
+
+    ids = [v["responsavel_id"] for v in vinculos]
+    resp = supabase.table("responsaveis").select("*").in_("id", ids).order("id").execute()
+    return resp.data or []
+
+
+# =========================
+# REGISTROS DE ENTRADA / SAÍDA
+# =========================
+def registrar_evento(
+    aluno_id: int,
+    tipo: str,
+    mensagem_enviada: bool = False,
+    observacao: Optional[str] = None
+):
+    tipo = tipo.lower().strip()
+    if tipo not in ("entrada", "saida"):
+        raise ValueError("tipo deve ser 'entrada' ou 'saida'")
+
+    dados = _limpar_none({
+        "aluno_id": aluno_id,
+        "tipo": tipo,
+        "mensagem_enviada": mensagem_enviada,
+        "observacao": observacao
+    })
+
+    resp = supabase.table("registros").insert(dados).execute()
+    return _primeiro(resp.data or [])
+
+
+def registrar_entrada(aluno_id: int, observacao: Optional[str] = None):
+    return registrar_evento(aluno_id, "entrada", False, observacao)
+
+
+def registrar_saida(aluno_id: int, observacao: Optional[str] = None):
+    return registrar_evento(aluno_id, "saida", False, observacao)
+
+
+def listar_registros():
+    resp = supabase.table("registros").select("*").order("id", desc=True).execute()
+    return resp.data or []
+
+
+def listar_registros_do_aluno(aluno_id: int):
+    resp = (
+        supabase
+        .table("registros")
+        .select("*")
+        .eq("aluno_id", aluno_id)
+        .order("id", desc=True)
+        .execute()
+    )
+    return resp.data or []
+
+
+def buscar_ultimo_registro_do_aluno(aluno_id: int):
+    resp = (
+        supabase
+        .table("registros")
+        .select("*")
+        .eq("aluno_id", aluno_id)
+        .order("id", desc=True)
+        .limit(1)
+        .execute()
+    )
+    return _primeiro(resp.data or [])
+
+
+def marcar_mensagem_enviada(registro_id: int, enviado: bool = True):
+    resp = (
+        supabase
+        .table("registros")
+        .update({"mensagem_enviada": enviado})
+        .eq("id", registro_id)
+        .execute()
+    )
+    return _primeiro(resp.data or [])

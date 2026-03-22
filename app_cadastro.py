@@ -6,9 +6,6 @@ import os
 from database import (  # type: ignore
     criar_tabelas,
     inserir_aluno_inicial,
-    atualizar_pasta_fotos,
-    verifica_aluno_existe,
-    excluir_aluno,
     listar_alunos
 )
 
@@ -36,7 +33,7 @@ class AppCadastro:
         tk.Label(root, text="Turma / Série (Ex: 2A):", font=("Arial", 10)).pack(pady=2)
         tk.Entry(root, textvariable=self.turma_var, width=50).pack(pady=2)
 
-        tk.Label(root, text="Número da Chamada:", font=("Arial", 10)).pack(pady=2)
+        tk.Label(root, text="Número da Chamada (apenas visual por enquanto):", font=("Arial", 10)).pack(pady=2)
         tk.Entry(root, textvariable=self.numero_var, width=50).pack(pady=2)
 
         tk.Label(root, text="Nome do Responsável:", font=("Arial", 10)).pack(pady=2)
@@ -76,24 +73,29 @@ class AppCadastro:
         email = self.email_var.get().strip()
         tele = self.tele_var.get().strip()
 
-        if not all([nome, turma, numero_str, resp, email, tele]):
+        if not all([nome, turma, resp, email, tele]):
             messagebox.showwarning("Aviso", "Preencha todos os campos do formulário!")
             return
 
-        if not numero_str.isdigit():
+        # O número da chamada está sendo mantido só na interface por enquanto.
+        # Ele ainda não está salvo no Supabase.
+        if numero_str and not numero_str.isdigit():
             messagebox.showwarning("Aviso", "O número da chamada deve conter apenas números inteiros!")
             return
 
-        numero_chamada = int(numero_str)
+        aluno = inserir_aluno_inicial(
+            nome=nome,
+            turma=turma,
+            responsavel_nome=resp,
+            responsavel_telefone=tele,
+            email=email
+        )
 
-        if verifica_aluno_existe(turma, numero_chamada):
-            messagebox.showerror(
-                "Erro",
-                f"Já existe um aluno cadastrado na turma {turma} com o número {numero_chamada}."
-            )
+        if not aluno:
+            messagebox.showerror("Erro", "Não foi possível cadastrar o aluno no banco.")
             return
 
-        id_aluno = inserir_aluno_inicial(nome, turma, numero_chamada, resp, email, tele)
+        id_aluno = aluno["id"]
 
         pasta_base = "fotos"
         if not os.path.exists(pasta_base):
@@ -105,13 +107,10 @@ class AppCadastro:
         if not os.path.exists(pasta_aluno):
             os.makedirs(pasta_aluno)
 
-        atualizar_pasta_fotos(id_aluno, pasta_aluno)
-
         cap = cv2.VideoCapture(0)
 
         if not cap.isOpened():
             messagebox.showerror("Erro", "Não foi possível acessar a webcam!")
-            excluir_aluno(id_aluno)
             return
 
         fotos_capturadas = 0
@@ -159,17 +158,18 @@ class AppCadastro:
             )
             self.limpar_campos()
         else:
-            messagebox.showwarning("Aviso", "Nenhuma foto foi capturada. O cadastro foi cancelado.")
-            excluir_aluno(id_aluno)
+            messagebox.showwarning("Aviso", "Nenhuma foto foi capturada, mas o aluno já foi cadastrado no banco.")
 
     def mostrar_lista_alunos(self):
-        """Abre uma nova janela mostrando todos os alunos cadastrados."""
         alunos = listar_alunos()
         if not alunos:
             messagebox.showinfo("Lista de Alunos", "Nenhum aluno cadastrado ainda.")
             return
 
-        texto_lista = "\n".join(alunos)
+        texto_lista = "\n".join(
+            f'ID: {a["id"]} | Nome: {a["nome"]} | Turma: {a.get("turma", "")}'
+            for a in alunos
+        )
 
         janela_lista = tk.Toplevel(self.root)
         janela_lista.title("Alunos Cadastrados")
@@ -194,7 +194,6 @@ class AppCadastro:
         scrollbar.config(command=lista_box.yview)
 
     def limpar_campos(self):
-        """Limpa os campos para o próximo cadastro."""
         self.nome_var.set("")
         self.turma_var.set("")
         self.numero_var.set("")
