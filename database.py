@@ -276,8 +276,19 @@ def upload_foto_aluno(aluno_id: int, caminho_arquivo: str, nome_arquivo: Optiona
     return storage_path
 
 
-def obter_url_publica_foto(foto_path: str):
-    return supabase.storage.from_(BUCKET_FOTOS).get_public_url(foto_path)
+def obter_url_assinada_foto(foto_path: str, expira_em: int = 300):
+    if not foto_path:
+        return None
+
+    resposta = supabase.storage.from_(BUCKET_FOTOS).create_signed_url(
+        foto_path,
+        expira_em
+    )
+
+    if isinstance(resposta, dict):
+        return resposta.get("signedURL") or resposta.get("signedUrl") or resposta.get("signed_url")
+
+    return resposta
 
 
 # =========================
@@ -306,3 +317,45 @@ def excluir_aluno(aluno_id: int):
             pass
 
     return True, f"Aluno {aluno_id} excluído com sucesso."
+
+    # =========================
+# STORAGE
+# =========================
+def upload_foto_aluno(aluno_id: int, caminho_arquivo: str, nome_arquivo: Optional[str] = None):
+    if not os.path.exists(caminho_arquivo):
+        raise FileNotFoundError(f"Arquivo não encontrado: {caminho_arquivo}")
+
+    extensao = os.path.splitext(caminho_arquivo)[1].lower() or ".jpg"
+    if nome_arquivo is None:
+        nome_arquivo = f"principal{extensao}"
+
+    storage_path = f"alunos/{aluno_id}/{nome_arquivo}"
+    content_type = mimetypes.guess_type(caminho_arquivo)[0] or "image/jpeg"
+
+    with open(caminho_arquivo, "rb") as f:
+        supabase.storage.from_(BUCKET_FOTOS).upload(
+            path=storage_path,
+            file=f,
+            file_options={
+                "content-type": content_type,
+                "upsert": "true"
+            }
+        )
+
+    atualizar_foto_aluno(aluno_id, storage_path)
+    return storage_path
+
+
+def obter_url_assinada_foto(foto_path: str, expira_em: int = 300):
+    if not foto_path:
+        return None
+
+    resposta = supabase.storage.from_(BUCKET_FOTOS).create_signed_url(
+        foto_path,
+        expira_em
+    )
+
+    if isinstance(resposta, dict):
+        return resposta.get("signedURL") or resposta.get("signedUrl") or resposta.get("signed_url")
+
+    return resposta
