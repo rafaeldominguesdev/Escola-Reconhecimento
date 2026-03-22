@@ -1,3 +1,4 @@
+import shutil
 from pathlib import Path
 from typing import Any, Optional
 import os
@@ -163,7 +164,7 @@ def buscar_responsaveis_do_aluno(aluno_id: int):
 
 
 # =========================
-# REGISTROS
+# REGISTROS DE ENTRADA / SAÍDA
 # =========================
 def registrar_evento(
     aluno_id: int,
@@ -224,6 +225,18 @@ def buscar_ultimo_registro_do_aluno(aluno_id: int):
     return _primeiro(resp.data or [])
 
 
+def registrar_presenca_automatica(aluno_id: int, observacao: Optional[str] = None):
+    ultimo = buscar_ultimo_registro_do_aluno(aluno_id)
+
+    if not ultimo:
+        return registrar_entrada(aluno_id, observacao)
+
+    if ultimo["tipo"] == "entrada":
+        return registrar_saida(aluno_id, observacao)
+
+    return registrar_entrada(aluno_id, observacao)
+
+
 def marcar_mensagem_enviada(registro_id: int, enviado: bool = True):
     resp = (
         supabase
@@ -265,3 +278,31 @@ def upload_foto_aluno(aluno_id: int, caminho_arquivo: str, nome_arquivo: Optiona
 
 def obter_url_publica_foto(foto_path: str):
     return supabase.storage.from_(BUCKET_FOTOS).get_public_url(foto_path)
+
+
+# =========================
+# EXCLUSÃO
+# =========================
+def excluir_aluno(aluno_id: int):
+    aluno = buscar_aluno_por_id(aluno_id)
+    if not aluno:
+        return False, "Aluno não encontrado."
+
+    foto_path = aluno.get("foto_path")
+
+    if foto_path:
+        try:
+            supabase.storage.from_(BUCKET_FOTOS).remove([foto_path])
+        except Exception:
+            pass
+
+    supabase.table("alunos").delete().eq("id", aluno_id).execute()
+
+    pasta_local = os.path.join("fotos", f"aluno_{aluno_id}")
+    if os.path.exists(pasta_local):
+        try:
+            shutil.rmtree(pasta_local)
+        except Exception:
+            pass
+
+    return True, f"Aluno {aluno_id} excluído com sucesso."

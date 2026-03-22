@@ -1,7 +1,6 @@
 import cv2  # type: ignore
 import os
 import time
-from datetime import datetime
 
 import face_recognition  # type: ignore
 import numpy as np  # type: ignore
@@ -9,15 +8,14 @@ import numpy as np  # type: ignore
 from database import (  # type: ignore
     criar_tabelas,
     buscar_aluno_por_id,
-    buscar_ultimo_registro,
-    registrar_ponto
+    registrar_presenca_automatica
 )
 
 
 def carregar_encodings_do_banco():
     """
-    Percorre a pasta 'fotos', processa cada imagem com a biblioteca face_recognition
-    e guarda os traços matemáticos de cada rosto atrelados ao seu respectivo ID.
+    Percorre a pasta 'fotos', processa cada imagem com face_recognition
+    e guarda os encodings faciais atrelados ao respectivo ID do aluno.
     """
     encodings_conhecidos = []
     ids_conhecidos = []
@@ -27,7 +25,7 @@ def carregar_encodings_do_banco():
         print("Pasta de fotos não encontrada. Nenhum rosto cadastrado.")
         return encodings_conhecidos, ids_conhecidos
 
-    print("Carregando rostos do banco de dados. Isso pode demorar alguns segundos...")
+    print("Carregando rostos cadastrados. Isso pode demorar alguns segundos...")
 
     for nome_pasta in os.listdir(pasta_base):
         caminho_pasta_aluno = os.path.join(pasta_base, nome_pasta)
@@ -57,8 +55,8 @@ def carregar_encodings_do_banco():
 
 def iniciar_reconhecimento():
     """
-    Ativa a webcam em tempo real, capta os rostos presentes nela e checa
-    no banco de dados (SQLite) as informações detalhadas de quem ele identificou.
+    Ativa a webcam em tempo real, reconhece o aluno e registra
+    automaticamente ENTRADA ou SAIDA no Supabase.
     """
     criar_tabelas()
     controle_tempo = {}
@@ -70,17 +68,18 @@ def iniciar_reconhecimento():
 
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
-        print("Erro Crítico: Não foi possível conectar a webcam.")
+        print("Erro crítico: não foi possível conectar a webcam.")
         return
 
-    print("Câmera online. (Pressione 'q' na janela para fechar e interromper)")
+    print("Câmera online. Pressione 'q' para fechar.")
 
     while True:
         ret, frame = cap.read()
         if not ret:
-            print("Falha ao receber pacotes de imagem da câmera.")
+            print("Falha ao receber imagem da câmera.")
             break
 
+        # Reduz o frame para acelerar o reconhecimento
         small_frame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
         rgb_small_frame = np.ascontiguousarray(small_frame[:, :, ::-1])
 
@@ -101,7 +100,7 @@ def iniciar_reconhecimento():
                 if len(face_distances) > 0:
                     best_match_index = int(np.argmin(face_distances))
                     if matches[best_match_index]:
-                        id_encontrado = ids_conhecidos[best_match_index]  # type: ignore
+                        id_encontrado = ids_conhecidos[best_match_index]
 
             texto_exibicao = "Desconhecido"
             cor_caixa = (0, 0, 255)
@@ -110,32 +109,41 @@ def iniciar_reconhecimento():
                 dados_aluno = buscar_aluno_por_id(id_encontrado)
 
                 if dados_aluno:
-                    nome, turma, numero_chamada = dados_aluno
-                    texto_exibicao = f"{nome} - Turma {turma} (Nº {numero_chamada})"
+                    nome = dados_aluno.get("nome", "Aluno")
+                    turma = dados_aluno.get("turma", "")
+
+                    if turma:
+                        texto_exibicao = f"{nome} - Turma {turma}"
+                    else:
+                        texto_exibicao = nome
+
                     cor_caixa = (0, 255, 0)
 
                     tempo_atual = time.time()
 
+                    # Evita registrar várias vezes seguidas do mesmo aluno
                     if (
                         id_encontrado not in controle_tempo
-                        or (tempo_atual - controle_tempo[id_encontrado]) > 30  # type: ignore
+                        or (tempo_atual - controle_tempo[id_encontrado]) > 30
                     ):
-                        agora = datetime.now()
-                        data_atual = agora.strftime("%Y-%m-%d")
-                        hora_atual = agora.strftime("%H:%M:%S")
+                        try:
+                            registro = registrar_presenca_automatica(
+                                id_encontrado,
+                                "reconhecimento automatico"
+                            )
 
-                        ultimo_tipo = buscar_ultimo_registro(id_encontrado, data_atual)
+                            controle_tempo[id_encontrado] = tempo_atual
 
-                        if ultimo_tipo is None or ultimo_tipo == "SAIDA":
-                            novo_tipo = "ENTRADA"
-                        else:
-                            novo_tipo = "SAIDA"
+                            if registro:
+                                tipo = registro.get("tipo", "desconhecido").upper()
+                                data_hora = registro.get("data_hora", "")
+                                print(f"[{data_hora}] REGISTRO: {nome} marcou {tipo}.")
+                            else:
+                                print(f"Não foi possível registrar presença para {nome}.")
+                        except Exception as e:
+                            print(f"Erro ao registrar presença de {nome}: {e}")
 
-                        registrar_ponto(id_encontrado, data_atual, hora_atual, novo_tipo)
-                        controle_tempo[id_encontrado] = tempo_atual
-
-                        print(f"[{hora_atual}] REGISTRO: {nome} marcou {novo_tipo}.")
-
+            # Volta as coordenadas ao tamanho original do frame
             top *= 4
             right *= 4
             bottom *= 4
@@ -145,11 +153,19 @@ def iniciar_reconhecimento():
             cv2.rectangle(frame, (left, bottom - 30), (right, bottom), cor_caixa, cv2.FILLED)
 
             font = cv2.FONT_HERSHEY_DUPLEX
-            cv2.putText(frame, texto_exibicao, (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
+            cv2.putText(
+                frame,
+                texto_exibicao,
+                (left + 6, bottom - 6),
+                font,
+                0.5,
+                (255, 255, 255),
+                1
+            )
 
         cv2.imshow("Sistema Escolar - Reconhecimento Facial", frame)
 
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord("q"):
             break
 
     cap.release()

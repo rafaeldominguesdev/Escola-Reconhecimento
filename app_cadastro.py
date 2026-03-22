@@ -7,7 +7,8 @@ from database import (  # type: ignore
     criar_tabelas,
     inserir_aluno_inicial,
     listar_alunos,
-    upload_foto_aluno
+    upload_foto_aluno,
+    excluir_aluno
 )
 
 
@@ -15,7 +16,7 @@ class AppCadastro:
     def __init__(self, root):
         self.root = root
         self.root.title("Cadastro de Alunos - Sistema Escolar")
-        self.root.geometry("550x650")
+        self.root.geometry("550x760")
 
         criar_tabelas()
 
@@ -25,6 +26,7 @@ class AppCadastro:
         self.resp_var = tk.StringVar()
         self.email_var = tk.StringVar()
         self.tele_var = tk.StringVar()
+        self.excluir_id_var = tk.StringVar()
 
         tk.Label(root, text="Módulo de Cadastro de Alunos", font=("Arial", 16, "bold")).pack(pady=10)
 
@@ -65,6 +67,19 @@ class AppCadastro:
             font=("Arial", 10)
         )
         self.btn_listar.pack(pady=5)
+
+        tk.Label(root, text="Excluir aluno por ID:", font=("Arial", 10, "bold")).pack(pady=(15, 2))
+        tk.Entry(root, textvariable=self.excluir_id_var, width=20).pack(pady=2)
+
+        self.btn_excluir = tk.Button(
+            root,
+            text="Excluir Aluno",
+            command=self.excluir_aluno_interface,
+            bg="#dc3545",
+            fg="white",
+            font=("Arial", 10, "bold")
+        )
+        self.btn_excluir.pack(pady=8)
 
     def iniciar_captura(self):
         nome = self.nome_var.get().strip()
@@ -208,6 +223,41 @@ class AppCadastro:
 
         scrollbar.config(command=lista_box.yview)
 
+    def excluir_aluno_interface(self):
+        aluno_id_str = self.excluir_id_var.get().strip()
+
+        if not aluno_id_str:
+            messagebox.showwarning("Aviso", "Digite o ID do aluno que deseja excluir.")
+            return
+
+        if not aluno_id_str.isdigit():
+            messagebox.showwarning("Aviso", "O ID do aluno deve ser numérico.")
+            return
+
+        aluno_id = int(aluno_id_str)
+
+        confirmar = messagebox.askyesno(
+            "Confirmar exclusão",
+            f"Tem certeza que deseja excluir o aluno ID {aluno_id}?\n\n"
+            "Isso vai apagar:\n"
+            "- o aluno no banco\n"
+            "- os registros de entrada/saída\n"
+            "- o vínculo com responsável\n"
+            "- a foto principal no Supabase Storage\n"
+            "- a pasta local de fotos"
+        )
+
+        if not confirmar:
+            return
+
+        ok, mensagem = excluir_aluno(aluno_id)
+
+        if ok:
+            messagebox.showinfo("Sucesso", mensagem)
+            self.excluir_id_var.set("")
+        else:
+            messagebox.showerror("Erro", mensagem)
+
     def limpar_campos(self):
         self.nome_var.set("")
         self.turma_var.set("")
@@ -221,3 +271,5 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = AppCadastro(root)
     root.mainloop()
+
+    
