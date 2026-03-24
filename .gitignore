@@ -1,4 +1,20 @@
-venv/
-__pycache__/
-*.pyc
-escola.db
+# Python
+backend/__pycache__/
+backend/*.pyc
+backend/venv/
+
+# Banco local
+backend/escola.db
+
+# Variáveis de ambiente
+backend/.env
+.env
+
+# Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+
+# Outros
+.DS_Store
+Thumbs.db
