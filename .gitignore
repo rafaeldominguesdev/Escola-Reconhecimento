@@ -9,6 +9,7 @@ backend/escola.db
 # Variáveis de ambiente
 backend/.env
 .env
+frontend/.env.local
 
 # Next.js
 frontend/node_modules/
