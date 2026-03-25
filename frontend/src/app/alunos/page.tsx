@@ -1,5 +1,8 @@
+"use client"
+
+import { useState, useMemo } from "react"
 import Link from "next/link"
-import { PlusIcon } from "lucide-react"
+import { PlusIcon, Search } from "lucide-react"
 
 import { PageHeader } from "@/components/admin/page-header"
 import { Badge } from "@/components/ui/badge"
@@ -16,6 +19,19 @@ const alunos = [
 ]
 
 export default function Page() {
+  const [searchQuery, setSearchQuery] = useState("")
+
+  const filteredAlunos = useMemo(() => {
+    return alunos.filter((a) => {
+      const query = searchQuery.toLowerCase()
+      return (
+        a.nome.toLowerCase().includes(query) ||
+        a.id.toLowerCase().includes(query) ||
+        a.turma.toLowerCase().includes(query)
+      )
+    })
+  }, [searchQuery])
+
   return (
     <div className="flex min-h-svh flex-col">
       <PageHeader
@@ -36,7 +52,15 @@ export default function Page() {
           <CardHeader className="gap-3">
             <CardTitle>Lista de alunos</CardTitle>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-              <Input placeholder="Buscar por nome, ID ou turma…" />
+              <div className="relative flex-1">
+                <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+                <Input
+                  className="pl-9"
+                  placeholder="Buscar por nome, ID ou turma…"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
               <Button variant="outline">Filtrar</Button>
             </div>
           </CardHeader>
@@ -52,34 +76,42 @@ export default function Page() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {alunos.map((a) => (
-                  <TableRow key={a.id}>
-                    <TableCell className="font-mono text-xs">{a.id}</TableCell>
-                    <TableCell className="font-medium">{a.nome}</TableCell>
-                    <TableCell>{a.turma}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          a.status === "Ativo"
-                            ? "success"
-                            : a.status === "Pendente"
-                              ? "warning"
-                              : "secondary"
-                        }
-                      >
-                        {a.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="sm">
-                        Ver
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        Editar
-                      </Button>
+                {filteredAlunos.length > 0 ? (
+                  filteredAlunos.map((a) => (
+                    <TableRow key={a.id}>
+                      <TableCell className="font-mono text-xs">{a.id}</TableCell>
+                      <TableCell className="font-medium">{a.nome}</TableCell>
+                      <TableCell>{a.turma}</TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            a.status === "Ativo"
+                              ? "success"
+                              : a.status === "Pendente"
+                                ? "warning"
+                                : "secondary"
+                          }
+                        >
+                          {a.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Button variant="ghost" size="sm">
+                          Ver
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          Editar
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
+                      Nenhum aluno encontrado para "{searchQuery}".
                     </TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
           </CardContent>
