@@ -90,7 +90,7 @@ export default function Page() {
         </div>
 
         <div className="grid gap-4 lg:grid-cols-7">
-          <Card className="overflow-hidden lg:col-span-4">
+          <Card className="min-w-0 overflow-hidden lg:col-span-4">
             <CardHeader>
               <CardTitle>Atividade (últimos 7 dias)</CardTitle>
               <CardDescription>Reconhecimentos por dia</CardDescription>
