@@ -1,22 +1,37 @@
 import Link from "next/link"
-import { ArrowUpRightIcon, CameraIcon, UsersIcon } from "lucide-react"
+import {
+  ArrowUpRightIcon,
+  CameraIcon,
+  ClipboardListIcon,
+  UserIcon,
+  UsersIcon,
+} from "lucide-react"
 
 import { ActivitiesChart } from "@/components/admin/activities-chart"
 import { PageHeader } from "@/components/admin/page-header"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+import { getDashboardData } from "@/lib/dashboard"
 
-const recentEvents = [
-  { id: "EVT-1042", tipo: "Entrada", aluno: "Ana Souza", hora: "07:12", status: "Reconhecido" },
-  { id: "EVT-1041", tipo: "Saída", aluno: "Bruno Lima", hora: "12:03", status: "Reconhecido" },
-  { id: "EVT-1039", tipo: "Entrada", aluno: "Carla Nunes", hora: "07:18", status: "Em análise" },
-  { id: "EVT-1036", tipo: "Alerta", aluno: "Visitante", hora: "09:44", status: "Atenção" },
-]
+export default async function Page() {
+  const data = await getDashboardData()
 
-export default function Page() {
   return (
     <div className="flex min-h-svh flex-col">
       <PageHeader
@@ -30,6 +45,7 @@ export default function Page() {
                 <ArrowUpRightIcon className="ml-1.5 size-4" />
               </Link>
             </Button>
+
             <Button asChild>
               <Link href="/alunos/novo">
                 <UsersIcon className="size-4" />
@@ -43,47 +59,71 @@ export default function Page() {
       <main className="flex-1 space-y-4 p-4">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           <Card>
-            <CardHeader>
-              <CardTitle>Alunos cadastrados</CardTitle>
-              <CardDescription>Total ativo no sistema</CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <div>
+                <CardTitle className="text-sm font-medium">
+                  Alunos cadastrados
+                </CardTitle>
+                <CardDescription>Total ativo no sistema</CardDescription>
+              </div>
+              <UsersIcon className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent className="flex items-end justify-between">
-              <div className="text-3xl font-semibold tabular-nums">1.248</div>
-              <Badge variant="secondary">+12 esta semana</Badge>
+              <div className="text-3xl font-semibold tabular-nums">
+                {data.totalAlunos}
+              </div>
+              <Badge variant="secondary">ativos</Badge>
             </CardContent>
           </Card>
+
           <Card>
-            <CardHeader>
-              <CardTitle>Reconhecimentos hoje</CardTitle>
-              <CardDescription>Entradas/saídas identificadas</CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <div>
+                <CardTitle className="text-sm font-medium">
+                  Responsáveis
+                </CardTitle>
+                <CardDescription>Total cadastrado no sistema</CardDescription>
+              </div>
+              <UserIcon className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent className="flex items-end justify-between">
-              <div className="text-3xl font-semibold tabular-nums">386</div>
-              <Badge variant="success">98,2% OK</Badge>
+              <div className="text-3xl font-semibold tabular-nums">
+                {data.totalResponsaveis}
+              </div>
+              <Badge variant="secondary">ativos</Badge>
             </CardContent>
           </Card>
+
           <Card>
-            <CardHeader>
-              <CardTitle>Em análise</CardTitle>
-              <CardDescription>Eventos aguardando revisão</CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <div>
+                <CardTitle className="text-sm font-medium">
+                  Registros hoje
+                </CardTitle>
+                <CardDescription>Entradas e saídas registradas</CardDescription>
+              </div>
+              <ClipboardListIcon className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent className="flex items-end justify-between">
-              <div className="text-3xl font-semibold tabular-nums">7</div>
-              <Badge variant="warning">revisar</Badge>
+              <div className="text-3xl font-semibold tabular-nums">
+                {data.registrosHoje}
+              </div>
+              <Badge variant="secondary">hoje</Badge>
             </CardContent>
           </Card>
+
           <Card>
-            <CardHeader>
-              <CardTitle>Câmeras</CardTitle>
-              <CardDescription>Status do feed ao vivo</CardDescription>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <div>
+                <CardTitle className="text-sm font-medium">Câmeras</CardTitle>
+                <CardDescription>Status do feed ao vivo</CardDescription>
+              </div>
+              <CameraIcon className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent className="flex items-end justify-between">
-              <div className="text-3xl font-semibold tabular-nums">4/5</div>
+              <div className="text-3xl font-semibold tabular-nums">--</div>
               <Button size="sm" variant="outline" asChild>
-                <Link href="/camera-ao-vivo">
-                  <CameraIcon className="size-4" />
-                  Abrir
-                </Link>
+                <Link href="/camera-ao-vivo">Abrir</Link>
               </Button>
             </CardContent>
           </Card>
@@ -96,37 +136,50 @@ export default function Page() {
               <CardDescription>Reconhecimentos por dia</CardDescription>
             </CardHeader>
             <CardContent className="p-4 pt-0">
-              <ActivitiesChart />
+              <ActivitiesChart data={data.atividades7Dias} />
             </CardContent>
           </Card>
 
           <Card className="lg:col-span-3">
             <CardHeader>
-              <CardTitle>Fila de atenção</CardTitle>
-              <CardDescription>Eventos que exigem ação</CardDescription>
+              <CardTitle>Resumo rápido</CardTitle>
+              <CardDescription>Indicadores principais do sistema</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-center justify-between gap-3 rounded-xl border bg-card/50 p-3">
                 <div className="min-w-0">
-                  <div className="truncate font-medium">Carla Nunes</div>
+                  <div className="truncate font-medium">Alunos</div>
                   <div className="truncate text-xs text-muted-foreground">
-                    Entrada 07:18 • Similaridade baixa
+                    Total de alunos cadastrados
                   </div>
                 </div>
-                <Badge variant="warning">revisar</Badge>
+                <Badge variant="secondary">{data.totalAlunos}</Badge>
               </div>
+
               <div className="flex items-center justify-between gap-3 rounded-xl border bg-card/50 p-3">
                 <div className="min-w-0">
-                  <div className="truncate font-medium">Visitante</div>
+                  <div className="truncate font-medium">Responsáveis</div>
                   <div className="truncate text-xs text-muted-foreground">
-                    Corredor • Detecção de face
+                    Total de responsáveis cadastrados
                   </div>
                 </div>
-                <Badge variant="destructive">alerta</Badge>
+                <Badge variant="secondary">{data.totalResponsaveis}</Badge>
               </div>
+
+              <div className="flex items-center justify-between gap-3 rounded-xl border bg-card/50 p-3">
+                <div className="min-w-0">
+                  <div className="truncate font-medium">Registros hoje</div>
+                  <div className="truncate text-xs text-muted-foreground">
+                    Entradas e saídas registradas
+                  </div>
+                </div>
+                <Badge variant="secondary">{data.registrosHoje}</Badge>
+              </div>
+
               <Separator />
+
               <Button variant="outline" className="w-full" asChild>
-                <Link href="/alertas">Ver todos os alertas</Link>
+                <Link href="/registros">Ver registros</Link>
               </Button>
             </CardContent>
           </Card>
@@ -135,51 +188,43 @@ export default function Page() {
         <Card>
           <CardHeader>
             <CardTitle>Últimos registros</CardTitle>
-            <CardDescription>Entradas, saídas e alertas recentes</CardDescription>
+            <CardDescription>Entradas e saídas recentes</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead>Aluno</TableHead>
-                  <TableHead>Hora</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {recentEvents.map((e) => (
-                  <TableRow key={e.id}>
-                    <TableCell className="font-mono text-xs">{e.id}</TableCell>
-                    <TableCell>{e.tipo}</TableCell>
-                    <TableCell>{e.aluno}</TableCell>
-                    <TableCell className="tabular-nums">{e.hora}</TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          e.status === "Reconhecido"
-                            ? "success"
-                            : e.status === "Em análise"
-                              ? "warning"
-                              : e.status === "Atenção"
-                                ? "destructive"
-                                : "secondary"
-                        }
-                      >
-                        {e.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Button variant="ghost" size="sm">
-                        Ver
-                      </Button>
-                    </TableCell>
+            {data.ultimosRegistros.length === 0 ? (
+              <div className="py-6 text-sm text-muted-foreground">
+                Nenhum registro encontrado.
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Tipo</TableHead>
+                    <TableHead>Aluno</TableHead>
+                    <TableHead>Hora</TableHead>
+                    <TableHead>Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {data.ultimosRegistros.map((registro) => (
+                    <TableRow key={registro.id}>
+                      <TableCell className="font-mono text-xs">
+                        {registro.id}
+                      </TableCell>
+                      <TableCell>{registro.tipo}</TableCell>
+                      <TableCell>{registro.aluno}</TableCell>
+                      <TableCell className="tabular-nums">
+                        {registro.hora}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">{registro.status}</Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
           </CardContent>
         </Card>
       </main>
