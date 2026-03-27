@@ -1,6 +1,5 @@
 import Link from "next/link"
 import {
-  CameraIcon,
   ClipboardListIcon,
   UserIcon,
   UsersIcon,
@@ -101,22 +100,6 @@ export default async function Page() {
                 {data.registrosHoje}
               </div>
               <Badge variant="secondary">hoje</Badge>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <div>
-                <CardTitle className="text-sm font-medium">Câmeras</CardTitle>
-                <CardDescription>Status do feed ao vivo</CardDescription>
-              </div>
-              <CameraIcon className="size-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent className="flex items-end justify-between">
-              <div className="text-3xl font-semibold tabular-nums">--</div>
-              <Button size="sm" variant="outline" asChild>
-                <Link href="/camera-ao-vivo">Abrir</Link>
-              </Button>
             </CardContent>
           </Card>
         </div>
