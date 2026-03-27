@@ -1,6 +1,5 @@
 import Link from "next/link"
 import {
-  ArrowUpRightIcon,
   CameraIcon,
   ClipboardListIcon,
   UserIcon,
@@ -36,16 +35,9 @@ export default async function Page() {
     <div className="flex min-h-svh flex-col">
       <PageHeader
         title="Dashboard"
-        subtitle="Visão geral do sistema e status do monitoramento"
+        subtitle="Visão geral do sistema"
         right={
           <div className="hidden items-center gap-2 sm:flex">
-            <Button variant="outline" asChild>
-              <Link href="/monitoramento">
-                Monitoramento
-                <ArrowUpRightIcon className="ml-1.5 size-4" />
-              </Link>
-            </Button>
-
             <Button asChild>
               <Link href="/alunos/novo">
                 <UsersIcon className="size-4" />

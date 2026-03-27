@@ -5,14 +5,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 
 const notificacoes = [
   { tipo: "Sistema", mensagem: "Atualização de modelo aplicada com sucesso.", quando: "há 12m", prioridade: "Baixa" },
-  { tipo: "Monitoramento", mensagem: "Câmera “Pátio” com instabilidade.", quando: "há 1h", prioridade: "Média" },
   { tipo: "Segurança", mensagem: "Detecção de visitante no corredor.", quando: "há 2h", prioridade: "Alta" },
 ]
 
 export default function Page() {
   return (
     <div className="flex min-h-svh flex-col">
-      <PageHeader title="Notificações" subtitle="Mensagens do sistema e monitoramento" />
+      <PageHeader title="Notificações" subtitle="Mensagens do sistema" />
 
       <main className="flex-1 space-y-4 p-4">
         <Card>

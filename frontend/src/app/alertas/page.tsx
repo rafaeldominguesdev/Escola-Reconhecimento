@@ -1,4 +1,3 @@
-import Link from "next/link"
 import { ShieldAlertIcon } from "lucide-react"
 
 import { PageHeader } from "@/components/admin/page-header"
@@ -77,10 +76,7 @@ export default function Page() {
                             similaridade, logs do modelo etc.).
                           </div>
                           <DialogFooter>
-                            <Button variant="outline" asChild>
-                              <Link href="/monitoramento">Abrir monitoramento</Link>
-                            </Button>
-                            <Button>Marcar como resolvido</Button>
+                             <Button>Marcar como resolvido</Button>
                           </DialogFooter>
                         </DialogContent>
                       </Dialog>
