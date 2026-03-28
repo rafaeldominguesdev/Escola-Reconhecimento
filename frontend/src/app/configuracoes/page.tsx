@@ -98,33 +98,7 @@ export default function Page() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Parâmetros</CardTitle>
-            <CardDescription>
-              Pontos para integração de thresholds, webhooks e regras de alerta.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-4 md:grid-cols-2">
-            <div className="space-y-2">
-              <div className="text-sm font-medium">
-                Threshold de similaridade
-              </div>
-              <Input placeholder="Ex.: 0.78" />
-            </div>
-
-            <div className="space-y-2">
-              <div className="text-sm font-medium">
-                Retenção de registros (dias)
-              </div>
-              <Input placeholder="Ex.: 90" />
-            </div>
-
-            <div className="md:col-span-2 flex justify-end">
-              <Button>Salvar</Button>
-            </div>
-          </CardContent>
-        </Card>
+          
       </main>
     </div>
   )
