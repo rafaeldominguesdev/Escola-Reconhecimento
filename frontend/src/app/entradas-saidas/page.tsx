@@ -1,78 +1,239 @@
-import { PageHeader } from "@/components/admin/page-header"
+"use client"
+
+import { useEffect, useMemo, useState } from "react"
+import { SearchIcon } from "lucide-react"
+
+import { supabase } from "@/lib/supabase"
+import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
-const movimentacoes = [
-  { aluno: "Ana Souza", tipo: "Entrada", hora: "07:12", status: "Reconhecido" },
-  { aluno: "Carla Nunes", tipo: "Entrada", hora: "07:18", status: "Em análise" },
-  { aluno: "Bruno Lima", tipo: "Saída", hora: "12:03", status: "Reconhecido" },
-]
+type EntradaSaida = {
+  id: number
+  tipo: string
+  data_hora: string
+  mensagem_enviada: boolean | null
+  observacao: string | null
+  aluno: string
+}
 
-export default function Page() {
+export default function EntradasSaidasPage() {
+  const [dados, setDados] = useState<EntradaSaida[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+  const [search, setSearch] = useState("")
+  const [tipoFiltro, setTipoFiltro] = useState<"todos" | "entrada" | "saida">("todos")
+
+  useEffect(() => {
+    async function carregarDados() {
+      setLoading(true)
+      setError("")
+
+      const { data, error } = await supabase
+        .from("registros")
+        .select(`
+          id,
+          tipo,
+          data_hora,
+          mensagem_enviada,
+          observacao,
+          alunos (
+            nome
+          )
+        `)
+        .order("data_hora", { ascending: false })
+
+      if (error) {
+        console.error(error)
+        setError("Erro ao carregar entradas e saídas.")
+        setDados([])
+        setLoading(false)
+        return
+      }
+
+      const dadosFormatados: EntradaSaida[] = (data || []).map((item: any) => ({
+        id: item.id,
+        tipo: item.tipo,
+        data_hora: item.data_hora,
+        mensagem_enviada: item.mensagem_enviada,
+        observacao: item.observacao,
+        aluno: item.alunos?.nome || "Aluno não encontrado",
+      }))
+
+      setDados(dadosFormatados)
+      setLoading(false)
+    }
+
+    carregarDados()
+  }, [])
+
+  const dadosFiltrados = useMemo(() => {
+    const termo = search.trim().toLowerCase()
+
+    return dados.filter((item) => {
+      const matchBusca =
+        !termo ||
+        item.aluno.toLowerCase().includes(termo) ||
+        item.tipo.toLowerCase().includes(termo) ||
+        String(item.id).includes(termo) ||
+        (item.observacao || "").toLowerCase().includes(termo)
+
+      const matchTipo =
+        tipoFiltro === "todos" || item.tipo.toLowerCase() === tipoFiltro
+
+      return matchBusca && matchTipo
+    })
+  }, [dados, search, tipoFiltro])
+
+  const totalEntradas = dados.filter((item) => item.tipo.toLowerCase() === "entrada").length
+  const totalSaidas = dados.filter((item) => item.tipo.toLowerCase() === "saida").length
+  const totalGeral = dados.length
+
+  function formatarDataHora(dataHora: string) {
+    return new Date(dataHora).toLocaleString("pt-BR")
+  }
+
   return (
-    <div className="flex min-h-svh flex-col">
-      <PageHeader
-        title="Entradas e saídas"
-        subtitle="Acompanhe movimentações do dia"
-      />
+    <div className="space-y-6 p-6">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">Entradas e saídas</h1>
+        <p className="text-sm text-muted-foreground">
+          Acompanhe o fluxo de entrada e saída dos alunos.
+        </p>
+      </div>
 
-      <main className="flex-1 space-y-4 p-4">
+      <div className="grid gap-4 md:grid-cols-3">
         <Card>
           <CardHeader>
-            <CardTitle>Resumo</CardTitle>
-            <CardDescription>Contagens do dia (mock)</CardDescription>
-          </CardHeader>
-          <CardContent className="grid gap-3 sm:grid-cols-3">
-            <div className="rounded-xl border p-3">
-              <div className="text-xs text-muted-foreground">Entradas</div>
-              <div className="text-2xl font-semibold tabular-nums">214</div>
-            </div>
-            <div className="rounded-xl border p-3">
-              <div className="text-xs text-muted-foreground">Saídas</div>
-              <div className="text-2xl font-semibold tabular-nums">198</div>
-            </div>
-            <div className="rounded-xl border p-3">
-              <div className="text-xs text-muted-foreground">Pendentes</div>
-              <div className="text-2xl font-semibold tabular-nums">7</div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Movimentações recentes</CardTitle>
-            <CardDescription>Últimos eventos do dia</CardDescription>
+            <CardTitle className="text-sm font-medium">Total de entradas</CardTitle>
+            <CardDescription>Registros de entrada</CardDescription>
           </CardHeader>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Aluno</TableHead>
-                  <TableHead>Tipo</TableHead>
-                  <TableHead>Hora</TableHead>
-                  <TableHead>Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {movimentacoes.map((m) => (
-                  <TableRow key={`${m.aluno}-${m.hora}-${m.tipo}`}>
-                    <TableCell className="font-medium">{m.aluno}</TableCell>
-                    <TableCell>{m.tipo}</TableCell>
-                    <TableCell className="tabular-nums">{m.hora}</TableCell>
-                    <TableCell>
-                      <Badge variant={m.status === "Reconhecido" ? "success" : "warning"}>
-                        {m.status}
-                      </Badge>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+            <div className="text-3xl font-semibold">{totalEntradas}</div>
           </CardContent>
         </Card>
-      </main>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Total de saídas</CardTitle>
+            <CardDescription>Registros de saída</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-semibold">{totalSaidas}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium">Total geral</CardTitle>
+            <CardDescription>Entradas e saídas</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-semibold">{totalGeral}</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Card>
+        <CardHeader className="space-y-4">
+          <div>
+            <CardTitle>Histórico de entradas e saídas</CardTitle>
+            <CardDescription>
+              Busque por aluno, ID, observação e filtre por tipo.
+            </CardDescription>
+          </div>
+
+          <div className="flex flex-col gap-3 md:flex-row md:items-center">
+            <div className="relative w-full md:max-w-sm">
+              <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Buscar entrada ou saída..."
+                className="pl-9"
+              />
+            </div>
+
+            <select
+              value={tipoFiltro}
+              onChange={(e) =>
+                setTipoFiltro(e.target.value as "todos" | "entrada" | "saida")
+              }
+              className="h-10 rounded-md border bg-background px-3 text-sm"
+            >
+              <option value="todos">Todos</option>
+              <option value="entrada">Entrada</option>
+              <option value="saida">Saída</option>
+            </select>
+          </div>
+        </CardHeader>
+
+        <CardContent>
+          {loading ? (
+            <div className="py-10 text-sm text-muted-foreground">
+              Carregando dados...
+            </div>
+          ) : error ? (
+            <div className="py-10 text-sm text-red-500">{error}</div>
+          ) : dados.length === 0 ? (
+            <div className="py-10 text-sm text-muted-foreground">
+              Nenhum registro encontrado.
+            </div>
+          ) : dadosFiltrados.length === 0 ? (
+            <div className="py-10 text-sm text-muted-foreground">
+              Nenhum resultado para os filtros aplicados.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Aluno</TableHead>
+                    <TableHead>Tipo</TableHead>
+                    <TableHead>Data/Hora</TableHead>
+                    <TableHead>Mensagem</TableHead>
+                    <TableHead>Observação</TableHead>
+                  </TableRow>
+                </TableHeader>
+
+                <TableBody>
+                  {dadosFiltrados.map((item) => (
+                    <TableRow key={item.id}>
+                      <TableCell>{item.id}</TableCell>
+                      <TableCell className="font-medium">{item.aluno}</TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">{item.tipo}</Badge>
+                      </TableCell>
+                      <TableCell>{formatarDataHora(item.data_hora)}</TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">
+                          {item.mensagem_enviada ? "Enviada" : "Pendente"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{item.observacao || "-"}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }
-
