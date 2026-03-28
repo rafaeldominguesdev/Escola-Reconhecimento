@@ -1,123 +1,161 @@
 "use client"
 
-import { useState, useMemo } from "react"
-import Link from "next/link"
-import { PlusIcon, Search } from "lucide-react"
+import { useEffect, useMemo, useState } from "react"
+import { SearchIcon } from "lucide-react"
 
-import { PageHeader } from "@/components/admin/page-header"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { supabase } from "@/lib/supabase"
 import { Input } from "@/components/ui/input"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
-const alunos = [
-  { id: "AL-0001", nome: "Ana Souza", turma: "8º A", status: "Ativo" },
-  { id: "AL-0002", nome: "Bruno Lima", turma: "9º B", status: "Ativo" },
-  { id: "AL-0003", nome: "Carla Nunes", turma: "7º C", status: "Pendente" },
-  { id: "AL-0004", nome: "Diego Rocha", turma: "6º A", status: "Inativo" },
-]
+type Aluno = {
+  id: number
+  nome: string
+  turma: string | null
+  foto_path: string | null
+  created_at: string | null
+}
 
-export default function Page() {
-  const [searchQuery, setSearchQuery] = useState("")
+export default function AlunosPage() {
+  const [alunos, setAlunos] = useState<Aluno[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+  const [search, setSearch] = useState("")
 
-  const filteredAlunos = useMemo(() => {
-    return alunos.filter((a) => {
-      const query = searchQuery.toLowerCase()
+  useEffect(() => {
+    async function carregarAlunos() {
+      setLoading(true)
+      setError("")
+
+      const { data, error } = await supabase
+        .from("alunos")
+        .select("id, nome, turma, foto_path, created_at")
+        .order("created_at", { ascending: false })
+
+      if (error) {
+        console.error(error)
+        setError("Erro ao carregar alunos.")
+        setAlunos([])
+        setLoading(false)
+        return
+      }
+
+      setAlunos(data || [])
+      setLoading(false)
+    }
+
+    carregarAlunos()
+  }, [])
+
+  const alunosFiltrados = useMemo(() => {
+    const termo = search.trim().toLowerCase()
+
+    if (!termo) return alunos
+
+    return alunos.filter((aluno) => {
+      const nome = aluno.nome?.toLowerCase() || ""
+      const turma = aluno.turma?.toLowerCase() || ""
+      const id = String(aluno.id)
+
       return (
-        a.nome.toLowerCase().includes(query) ||
-        a.id.toLowerCase().includes(query) ||
-        a.turma.toLowerCase().includes(query)
+        nome.includes(termo) ||
+        turma.includes(termo) ||
+        id.includes(termo)
       )
     })
-  }, [searchQuery])
+  }, [alunos, search])
+
+  function formatarData(data: string | null) {
+    if (!data) return "-"
+    return new Date(data).toLocaleString("pt-BR")
+  }
 
   return (
-    <div className="flex min-h-svh flex-col">
-      <PageHeader
-        title="Alunos"
-        subtitle="Gerencie cadastros e status dos alunos"
-        right={
-          <Button asChild>
-            <Link href="/alunos/novo">
-              <PlusIcon className="size-4" />
-              Novo aluno
-            </Link>
-          </Button>
-        }
-      />
+    <div className="space-y-6 p-6">
+      <div>
+        <h1 className="text-2xl font-semibold tracking-tight">Alunos</h1>
+        <p className="text-sm text-muted-foreground">
+          Lista de alunos cadastrados no sistema.
+        </p>
+      </div>
 
-      <main className="flex-1 space-y-4 p-4">
-        <Card>
-          <CardHeader className="gap-3">
-            <CardTitle>Lista de alunos</CardTitle>
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-              <div className="relative flex-1">
-                <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-                <Input
-                  className="pl-9"
-                  placeholder="Buscar por nome, ID ou turma…"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <Button variant="outline">Filtrar</Button>
+      <Card>
+        <CardHeader className="space-y-4">
+          <div>
+            <CardTitle>Gerenciamento de alunos</CardTitle>
+            <CardDescription>
+              Busque por nome, turma ou ID.
+            </CardDescription>
+          </div>
+
+          <div className="relative max-w-sm">
+            <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar aluno..."
+              className="pl-9"
+            />
+          </div>
+        </CardHeader>
+
+        <CardContent>
+          {loading ? (
+            <div className="py-10 text-sm text-muted-foreground">
+              Carregando alunos...
             </div>
-          </CardHeader>
-          <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>ID</TableHead>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>Turma</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredAlunos.length > 0 ? (
-                  filteredAlunos.map((a) => (
-                    <TableRow key={a.id}>
-                      <TableCell className="font-mono text-xs">{a.id}</TableCell>
-                      <TableCell className="font-medium">{a.nome}</TableCell>
-                      <TableCell>{a.turma}</TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={
-                            a.status === "Ativo"
-                              ? "success"
-                              : a.status === "Pendente"
-                                ? "warning"
-                                : "secondary"
-                          }
-                        >
-                          {a.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button variant="ghost" size="sm">
-                          Ver
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          Editar
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                ) : (
+          ) : error ? (
+            <div className="py-10 text-sm text-red-500">{error}</div>
+          ) : alunos.length === 0 ? (
+            <div className="py-10 text-sm text-muted-foreground">
+              Nenhum aluno cadastrado.
+            </div>
+          ) : alunosFiltrados.length === 0 ? (
+            <div className="py-10 text-sm text-muted-foreground">
+              Nenhum aluno encontrado para a busca.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
-                      Nenhum aluno encontrado para "{searchQuery}".
-                    </TableCell>
+                    <TableHead>ID</TableHead>
+                    <TableHead>Nome</TableHead>
+                    <TableHead>Turma</TableHead>
+                    <TableHead>Foto</TableHead>
+                    <TableHead>Criado em</TableHead>
                   </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </CardContent>
-        </Card>
-      </main>
+                </TableHeader>
+
+                <TableBody>
+                  {alunosFiltrados.map((aluno) => (
+                    <TableRow key={aluno.id}>
+                      <TableCell>{aluno.id}</TableCell>
+                      <TableCell className="font-medium">{aluno.nome}</TableCell>
+                      <TableCell>{aluno.turma || "-"}</TableCell>
+                      <TableCell>{aluno.foto_path ? "Sim" : "Não"}</TableCell>
+                      <TableCell>{formatarData(aluno.created_at)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }
-
