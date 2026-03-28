@@ -48,9 +48,9 @@ export default async function Page() {
       />
 
       <main className="flex-1 space-y-4 p-4">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
               <div>
                 <CardTitle className="text-sm font-medium">
                   Alunos cadastrados
@@ -60,7 +60,7 @@ export default async function Page() {
               <UsersIcon className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent className="flex items-end justify-between">
-              <div className="text-3xl font-semibold tabular-nums">
+              <div className="text-3xl font-semibold">
                 {data.totalAlunos}
               </div>
               <Badge variant="secondary">ativos</Badge>
@@ -68,17 +68,17 @@ export default async function Page() {
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
               <div>
                 <CardTitle className="text-sm font-medium">
                   Responsáveis
                 </CardTitle>
-                <CardDescription>Total cadastrado no sistema</CardDescription>
+                <CardDescription>Total cadastrado</CardDescription>
               </div>
               <UserIcon className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent className="flex items-end justify-between">
-              <div className="text-3xl font-semibold tabular-nums">
+              <div className="text-3xl font-semibold">
                 {data.totalResponsaveis}
               </div>
               <Badge variant="secondary">ativos</Badge>
@@ -86,17 +86,17 @@ export default async function Page() {
           </Card>
 
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
               <div>
                 <CardTitle className="text-sm font-medium">
                   Registros hoje
                 </CardTitle>
-                <CardDescription>Entradas e saídas registradas</CardDescription>
+                <CardDescription>Entradas e saídas</CardDescription>
               </div>
               <ClipboardListIcon className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent className="flex items-end justify-between">
-              <div className="text-3xl font-semibold tabular-nums">
+              <div className="text-3xl font-semibold">
                 {data.registrosHoje}
               </div>
               <Badge variant="secondary">hoje</Badge>
@@ -105,12 +105,12 @@ export default async function Page() {
         </div>
 
         <div className="grid gap-4 lg:grid-cols-7">
-          <Card className="min-w-0 overflow-hidden lg:col-span-4">
+          <Card className="lg:col-span-4">
             <CardHeader>
               <CardTitle>Atividade (últimos 7 dias)</CardTitle>
               <CardDescription>Reconhecimentos por dia</CardDescription>
             </CardHeader>
-            <CardContent className="p-4 pt-0">
+            <CardContent>
               <ActivitiesChart data={data.atividades7Dias} />
             </CardContent>
           </Card>
@@ -118,37 +118,21 @@ export default async function Page() {
           <Card className="lg:col-span-3">
             <CardHeader>
               <CardTitle>Resumo rápido</CardTitle>
-              <CardDescription>Indicadores principais do sistema</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-center justify-between gap-3 rounded-xl border bg-card/50 p-3">
-                <div className="min-w-0">
-                  <div className="truncate font-medium">Alunos</div>
-                  <div className="truncate text-xs text-muted-foreground">
-                    Total de alunos cadastrados
-                  </div>
-                </div>
-                <Badge variant="secondary">{data.totalAlunos}</Badge>
+              <div className="flex justify-between rounded-xl border p-3">
+                <span>Alunos</span>
+                <Badge>{data.totalAlunos}</Badge>
               </div>
 
-              <div className="flex items-center justify-between gap-3 rounded-xl border bg-card/50 p-3">
-                <div className="min-w-0">
-                  <div className="truncate font-medium">Responsáveis</div>
-                  <div className="truncate text-xs text-muted-foreground">
-                    Total de responsáveis cadastrados
-                  </div>
-                </div>
-                <Badge variant="secondary">{data.totalResponsaveis}</Badge>
+              <div className="flex justify-between rounded-xl border p-3">
+                <span>Responsáveis</span>
+                <Badge>{data.totalResponsaveis}</Badge>
               </div>
 
-              <div className="flex items-center justify-between gap-3 rounded-xl border bg-card/50 p-3">
-                <div className="min-w-0">
-                  <div className="truncate font-medium">Registros hoje</div>
-                  <div className="truncate text-xs text-muted-foreground">
-                    Entradas e saídas registradas
-                  </div>
-                </div>
-                <Badge variant="secondary">{data.registrosHoje}</Badge>
+              <div className="flex justify-between rounded-xl border p-3">
+                <span>Registros hoje</span>
+                <Badge>{data.registrosHoje}</Badge>
               </div>
 
               <Separator />
@@ -160,48 +144,70 @@ export default async function Page() {
           </Card>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Últimos registros</CardTitle>
-            <CardDescription>Entradas e saídas recentes</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {data.ultimosRegistros.length === 0 ? (
-              <div className="py-6 text-sm text-muted-foreground">
-                Nenhum registro encontrado.
-              </div>
-            ) : (
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Card>
+            <CardHeader>
+              <CardTitle>Últimos responsáveis cadastrados</CardTitle>
+              <CardDescription>Dados vindos da tabela responsaveis</CardDescription>
+            </CardHeader>
+            <CardContent>
+              {data.ultimosResponsaveis.length === 0 ? (
+                <div className="py-6 text-sm text-muted-foreground">
+                  Nenhum responsável encontrado.
+                </div>
+              ) : (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Nome</TableHead>
+                      <TableHead>Telefone</TableHead>
+                      <TableHead>Email</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {data.ultimosResponsaveis.map((responsavel) => (
+                      <TableRow key={responsavel.id}>
+                        <TableCell>{responsavel.nome}</TableCell>
+                        <TableCell>{responsavel.telefone || "-"}</TableCell>
+                        <TableCell>{responsavel.email || "-"}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Últimos registros</CardTitle>
+              <CardDescription>Entradas e saídas recentes</CardDescription>
+            </CardHeader>
+            <CardContent>
               <Table>
                 <TableHeader>
                   <TableRow>
                     <TableHead>ID</TableHead>
-                    <TableHead>Tipo</TableHead>
                     <TableHead>Aluno</TableHead>
+                    <TableHead>Tipo</TableHead>
                     <TableHead>Hora</TableHead>
-                    <TableHead>Status</TableHead>
                   </TableRow>
                 </TableHeader>
+
                 <TableBody>
-                  {data.ultimosRegistros.map((registro) => (
-                    <TableRow key={registro.id}>
-                      <TableCell className="font-mono text-xs">
-                        {registro.id}
-                      </TableCell>
-                      <TableCell>{registro.tipo}</TableCell>
-                      <TableCell>{registro.aluno}</TableCell>
-                      <TableCell className="tabular-nums">
-                        {registro.hora}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="secondary">{registro.status}</Badge>
-                      </TableCell>
+                  {data.ultimosRegistros.map((r) => (
+                    <TableRow key={r.id}>
+                      <TableCell>{r.id}</TableCell>
+                      <TableCell>{r.aluno}</TableCell>
+                      <TableCell>{r.tipo}</TableCell>
+                      <TableCell>{r.hora}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-            )}
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
       </main>
     </div>
   )
