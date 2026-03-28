@@ -97,7 +97,6 @@ export default function Page() {
             )}
           </CardContent>
         </Card>
-
           
       </main>
     </div>

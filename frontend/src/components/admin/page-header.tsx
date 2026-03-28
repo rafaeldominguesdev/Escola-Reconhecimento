@@ -3,7 +3,7 @@
 import * as React from "react"
 import { BellIcon, SearchIcon } from "lucide-react"
 import Link from "next/link"
-
+import { AlunoSearch } from "@/app/alunos/aluno-search"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -44,12 +44,7 @@ export function PageHeader({
           ) : null}
         </div>
 
-        <div className="hidden w-[22rem] items-center gap-2 md:flex">
-          <div className="relative w-full">
-            <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-            <Input className="pl-9" placeholder="Buscar…" />
-          </div>
-        </div>
+        <AlunoSearch />
 
         {right}
 
