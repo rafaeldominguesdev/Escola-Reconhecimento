@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { SearchIcon } from "lucide-react"
+import { SearchIcon, Trash2, AlertTriangle } from "lucide-react"
 
 import { supabase } from "@/lib/supabase"
 import { Input } from "@/components/ui/input"
@@ -23,6 +23,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 type Aluno = {
   id: number
@@ -62,6 +70,12 @@ export default function AlunosPage() {
   const [nivelAtivo, setNivelAtivo] = useState<string | null>(null)
   const [anoAtivo, setAnoAtivo] = useState<string | null>(null)
   const [salaAtiva, setSalaAtiva] = useState<string | null>(null)
+  
+  // Estados para Deleção
+  const [selectedIds, setSelectedIds] = useState<number[]>([])
+  const [isSelectMode, setIsSelectMode] = useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     async function carregarAlunos() {
@@ -132,6 +146,39 @@ export default function AlunosPage() {
     if (!data) return "-"
     return new Date(data).toLocaleString("pt-BR")
   }
+
+  async function handleDelete() {
+    if (selectedIds.length === 0) return
+    
+    setIsDeleting(true)
+    try {
+      // 1. Remover vínculos de responsáveis
+      await supabase.from("aluno_responsavel").delete().in("aluno_id", selectedIds)
+      
+      // 2. Remover registros de acesso
+      await supabase.from("registros").delete().in("aluno_id", selectedIds)
+      
+      // 3. Remover os alunos
+      const { error } = await supabase.from("alunos").delete().in("id", selectedIds)
+      
+      if (error) throw error
+      
+      // Atualizar lista local
+      setAlunos(prev => prev.filter(a => !selectedIds.includes(a.id)))
+      setSelectedIds([])
+      setIsDeleteDialogOpen(false)
+    } catch (err) {
+      console.error(err)
+      alert("Erro ao deletar alunos. Tente novamente.")
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
+  const selectedAlunos = useMemo(() => 
+    alunos.filter(a => selectedIds.includes(a.id)),
+    [alunos, selectedIds]
+  )
 
   return (
     <div className="space-y-6 p-6">
@@ -221,14 +268,52 @@ export default function AlunosPage() {
             )}
           </div>
 
-          <div className="relative max-w-sm">
-            <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Buscar aluno..."
-              className="pl-9"
-            />
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="relative max-w-sm flex-1">
+              <SearchIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Buscar aluno..."
+                className="pl-9"
+              />
+            </div>
+
+            <div className="flex items-center gap-2">
+              {!isSelectMode ? (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setIsSelectMode(true)}
+                >
+                  Selecionar
+                </Button>
+              ) : (
+                <>
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => {
+                      setIsSelectMode(false)
+                      setSelectedIds([])
+                    }}
+                  >
+                    Cancelar
+                  </Button>
+                  {selectedIds.length > 0 && (
+                    <Button 
+                      variant="destructive" 
+                      size="sm"
+                      onClick={() => setIsDeleteDialogOpen(true)}
+                      className="animate-in fade-in zoom-in duration-200"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Deletar ({selectedIds.length})
+                    </Button>
+                  )}
+                </>
+              )}
+            </div>
           </div>
         </CardHeader>
 
@@ -252,6 +337,9 @@ export default function AlunosPage() {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    {isSelectMode && (
+                      <TableHead className="w-[40px]"></TableHead>
+                    )}
                     <TableHead>ID</TableHead>
                     <TableHead>Nome</TableHead>
                     <TableHead>Turma</TableHead>
@@ -262,7 +350,23 @@ export default function AlunosPage() {
 
                 <TableBody>
                   {alunosFiltrados.map((aluno) => (
-                    <TableRow key={aluno.id}>
+                    <TableRow key={aluno.id} className={isSelectMode && selectedIds.includes(aluno.id) ? "bg-accent/40" : ""}>
+                      {isSelectMode && (
+                        <TableCell>
+                          <input 
+                            type="checkbox"
+                            className="h-4 w-4 rounded border-gray-300 cursor-pointer"
+                            checked={selectedIds.includes(aluno.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedIds(prev => [...prev, aluno.id])
+                              } else {
+                                setSelectedIds(prev => prev.filter(id => id !== aluno.id))
+                              }
+                            }}
+                          />
+                        </TableCell>
+                      )}
                       <TableCell>{aluno.id}</TableCell>
                       <TableCell className="font-medium">{aluno.nome}</TableCell>
                       <TableCell>{aluno.turma || "-"}</TableCell>
@@ -276,6 +380,52 @@ export default function AlunosPage() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangle className="h-5 w-5" />
+              Confirmar Deleção
+            </DialogTitle>
+            <DialogDescription>
+              {selectedIds.length === 1 ? (
+                <span>Tem certeza que deseja deletar permanentemente o aluno abaixo?</span>
+              ) : (
+                <span>Tem certeza que deseja deletar permanentemente os <strong>{selectedIds.length}</strong> alunos selecionados?</span>
+              )}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="max-h-[300px] overflow-auto rounded-lg border bg-muted/30 p-4">
+            <ul className="space-y-3">
+              {selectedAlunos.map(aluno => (
+                <li key={aluno.id} className="flex flex-col border-b border-border/50 pb-2 last:border-0 last:pb-0">
+                  <span className="font-bold text-sm">{aluno.nome}</span>
+                  <div className="flex gap-4 text-xs text-muted-foreground mt-1">
+                    <span><strong>Turma:</strong> {aluno.turma || "N/A"}</span>
+                    <span><strong>ID:</strong> {aluno.id}</span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="bg-destructive/10 p-3 rounded-lg flex gap-3 text-xs text-destructive">
+            <Trash2 className="h-4 w-4 shrink-0" />
+            <p>Esta ação não pode ser desfeita. Todos os registros de acesso e vínculos serão removidos permanentemente.</p>
+          </div>
+
+          <DialogFooter className="mt-4">
+            <Button variant="ghost" onClick={() => setIsDeleteDialogOpen(false)} disabled={isDeleting}>
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
+              {isDeleting ? "Deletando..." : "Sim, confirmar deleção"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
