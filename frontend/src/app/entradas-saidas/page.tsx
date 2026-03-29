@@ -6,6 +6,8 @@ import { SearchIcon } from "lucide-react"
 import { supabase } from "@/lib/supabase"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 import {
   Card,
   CardContent,
@@ -168,17 +170,41 @@ export default function EntradasSaidasPage() {
               />
             </div>
 
-            <select
-              value={tipoFiltro}
-              onChange={(e) =>
-                setTipoFiltro(e.target.value as "todos" | "entrada" | "saida")
-              }
-              className="h-10 rounded-md border bg-background px-3 text-sm"
-            >
-              <option value="todos">Todos</option>
-              <option value="entrada">Entrada</option>
-              <option value="saida">Saída</option>
-            </select>
+            <div className="inline-flex items-center gap-1.5 p-1 bg-muted/60 rounded-xl border border-border/40 shadow-inner">
+              <Button
+                variant={tipoFiltro === "todos" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setTipoFiltro("todos")}
+                className={cn(
+                  "h-9 px-5 text-sm font-medium transition-all duration-200 rounded-lg",
+                  tipoFiltro === "todos" ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                Todos
+              </Button>
+              <Button
+                variant={tipoFiltro === "entrada" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setTipoFiltro("entrada")}
+                className={cn(
+                  "h-9 px-5 text-sm font-medium transition-all duration-200 rounded-lg",
+                  tipoFiltro === "entrada" ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                Entrada
+              </Button>
+              <Button
+                variant={tipoFiltro === "saida" ? "secondary" : "ghost"}
+                size="sm"
+                onClick={() => setTipoFiltro("saida")}
+                className={cn(
+                  "h-9 px-5 text-sm font-medium transition-all duration-200 rounded-lg",
+                  tipoFiltro === "saida" ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                Saída
+              </Button>
+            </div>
           </div>
         </CardHeader>
 

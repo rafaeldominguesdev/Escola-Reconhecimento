@@ -207,61 +207,79 @@ export default function NovoAlunoPage() {
                 
                 <div className="flex flex-col gap-4">
                   {/* Seleção de Nível */}
-                  <div className="flex flex-wrap items-center gap-2">
-                    {TURMAS_CONFIG.map((config) => (
-                      <Button
-                        key={config.id}
-                        type="button"
-                        variant={nivelSel === config.id ? "default" : "outline"}
-                        size="sm"
-                        onClick={() => {
-                          setNivelSel(config.id)
-                          setAnoSel(null)
-                          setSalaSel(null)
-                        }}
-                        className="h-8 rounded-full"
-                      >
-                        {config.label}
-                      </Button>
-                    ))}
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground w-12 text-right">Nível:</span>
+                    <div className="inline-flex items-center gap-1.5 p-1 bg-muted/50 rounded-xl border border-border/40 shadow-inner">
+                      {TURMAS_CONFIG.map((config) => (
+                        <Button
+                          key={config.id}
+                          type="button"
+                          variant={nivelSel === config.id ? "secondary" : "ghost"}
+                          size="sm"
+                          onClick={() => {
+                            setNivelSel(config.id)
+                            setAnoSel(null)
+                            setSalaSel(null)
+                          }}
+                          className={cn(
+                            "h-9 px-4 text-sm font-medium transition-all duration-200 rounded-lg",
+                            nivelSel === config.id ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                          )}
+                        >
+                          {config.label}
+                        </Button>
+                      ))}
+                    </div>
                   </div>
 
                   {/* Seleção de Ano */}
                   {nivelSel && (
-                    <div className="flex flex-wrap items-center gap-2 animate-in fade-in slide-in-from-left-2 duration-300">
-                      {TURMAS_CONFIG.find(n => n.id === nivelSel)?.anos.map((ano) => (
-                        <Button
-                          key={ano}
-                          type="button"
-                          variant={anoSel === ano ? "secondary" : "ghost"}
-                          size="sm"
-                          onClick={() => {
-                            setAnoSel(ano)
-                            setSalaSel(null)
-                          }}
-                          className="h-8 rounded-full"
-                        >
-                          {ano}
-                        </Button>
-                      ))}
+                    <div className="flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-left-2 duration-300">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground w-12 text-right">Ano:</span>
+                      <div className="inline-flex items-center gap-1.5 p-1 bg-muted/50 rounded-xl border border-border/40 shadow-inner">
+                        {TURMAS_CONFIG.find(n => n.id === nivelSel)?.anos.map((ano) => (
+                          <Button
+                            key={ano}
+                            type="button"
+                            variant={anoSel === ano ? "secondary" : "ghost"}
+                            size="sm"
+                            onClick={() => {
+                              setAnoSel(ano)
+                              setSalaSel(null)
+                            }}
+                            className={cn(
+                              "h-9 px-4 text-sm font-medium transition-all duration-200 rounded-lg",
+                              anoSel === ano ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                            )}
+                          >
+                            {ano}
+                          </Button>
+                        ))}
+                      </div>
                     </div>
                   )}
 
                   {/* Seleção de Sala */}
                   {anoSel && (
-                    <div className="flex flex-wrap items-center gap-2 animate-in fade-in slide-in-from-left-2 duration-300">
-                      {SALAS.map((sala) => (
-                        <Button
-                          key={sala}
-                          type="button"
-                          variant={salaSel === sala ? "secondary" : "outline"}
-                          size="sm"
-                          onClick={() => setSalaSel(sala)}
-                          className="h-8 w-8 p-0 rounded-full"
-                        >
-                          {sala}
-                        </Button>
-                      ))}
+                    <div className="flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-left-2 duration-300">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground w-12 text-right">Sala:</span>
+                      <div className="inline-flex items-center gap-1.5 p-1 bg-muted/50 rounded-xl border border-border/40 shadow-inner">
+                        {SALAS.map((sala) => (
+                          <Button
+                            key={sala}
+                            type="button"
+                            variant={salaSel === sala ? "secondary" : "ghost"}
+                            size="sm"
+                            onClick={() => setSalaSel(sala)}
+                            className={cn(
+                              "h-9 w-10 p-0 text-sm font-medium transition-all duration-200 rounded-lg",
+                              salaSel === sala ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                            )}
+                          >
+                            {sala}
+                          </Button>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
