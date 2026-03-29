@@ -43,7 +43,6 @@ const navMain: NavItem[] = [
   { href: "/alunos", label: "Alunos", icon: UsersIcon },
   { href: "/alunos/novo", label: "Cadastrar aluno", icon: ChevronRightIcon },
   { href: "/registros", label: "Registros", icon: ClipboardListIcon },
-  { href: "/entradas-saidas", label: "Entradas e saídas", icon: SchoolIcon },
   { href: "/responsaveis", label: "Responsáveis", icon: UserIcon },
 ]
 

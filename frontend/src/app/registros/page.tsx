@@ -101,6 +101,16 @@ export default function RegistrosPage() {
     })
   }, [registros, search, tipoFiltro])
 
+  const totalEntradas = useMemo(() => 
+    registros.filter((r) => r.tipo.toLowerCase() === "entrada").length,
+    [registros]
+  )
+  const totalSaidas = useMemo(() => 
+    registros.filter((r) => r.tipo.toLowerCase() === "saida").length,
+    [registros]
+  )
+  const totalGeral = registros.length
+
   function formatarDataHora(dataHora: string) {
     const data = new Date(dataHora)
     return data.toLocaleString("pt-BR")
@@ -111,8 +121,40 @@ export default function RegistrosPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Registros</h1>
         <p className="text-sm text-muted-foreground">
-          Histórico de entradas e saídas dos alunos.
+          Histórico unificado de entradas e saídas dos alunos.
         </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card className="border-border/40 shadow-sm transition-all hover:shadow-md">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-bold uppercase tracking-wider text-muted-foreground">Total de entradas</CardTitle>
+            <CardDescription className="text-sm">Registros de entrada</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-5xl font-bold tracking-tight">{totalEntradas}</div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/40 shadow-sm transition-all hover:shadow-md">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-bold uppercase tracking-wider text-muted-foreground">Total de saídas</CardTitle>
+            <CardDescription className="text-sm">Registros de saída</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-5xl font-bold tracking-tight">{totalSaidas}</div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-border/40 shadow-sm bg-accent/20 transition-all hover:shadow-md">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-bold uppercase tracking-wider text-muted-foreground">Total geral</CardTitle>
+            <CardDescription className="text-sm">Soma de todos os registros</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-5xl font-bold tracking-tight">{totalGeral}</div>
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
