@@ -4,15 +4,14 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
-  CameraIcon,
-  ChevronRightIcon,
+  ActivityIcon,
   ClipboardListIcon,
-  LayoutDashboardIcon,
+  GraduationCapIcon,
   LogOutIcon,
   SchoolIcon,
   SettingsIcon,
-  UserIcon,
-  UsersIcon,
+  UserRoundPlusIcon,
+  Users2Icon,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -39,11 +38,11 @@ type NavItem = {
 }
 
 const navMain: NavItem[] = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboardIcon },
-  { href: "/alunos", label: "Alunos", icon: UsersIcon },
-  { href: "/alunos/novo", label: "Cadastrar aluno", icon: ChevronRightIcon },
+  { href: "/", label: "Dashboard", icon: ActivityIcon },
+  { href: "/alunos", label: "Alunos", icon: GraduationCapIcon },
+  { href: "/responsaveis", label: "Responsáveis", icon: Users2Icon },
+  { href: "/alunos/novo", label: "Cadastrar aluno", icon: UserRoundPlusIcon },
   { href: "/registros", label: "Registros", icon: ClipboardListIcon },
-  { href: "/responsaveis", label: "Responsáveis", icon: UserIcon },
 ]
 
 export function AppSidebar() {

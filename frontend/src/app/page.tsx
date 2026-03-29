@@ -1,8 +1,9 @@
 import Link from "next/link"
 import {
   ClipboardListIcon,
-  UserIcon,
-  UsersIcon,
+  GraduationCapIcon,
+  UserRoundPlusIcon,
+  Users2Icon,
 } from "lucide-react"
 
 import { ActivitiesChart } from "@/components/admin/activities-chart"
@@ -39,7 +40,7 @@ export default async function Page() {
           <div className="hidden items-center gap-2 sm:flex">
             <Button asChild>
               <Link href="/alunos/novo">
-                <UsersIcon className="size-4" />
+                <UserRoundPlusIcon className="size-4" />
                 Cadastrar aluno
               </Link>
             </Button>
@@ -57,7 +58,7 @@ export default async function Page() {
                 </CardTitle>
                 <CardDescription>Total ativo no sistema</CardDescription>
               </div>
-              <UsersIcon className="size-4 text-muted-foreground" />
+              <GraduationCapIcon className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent className="flex items-end justify-between">
               <div className="text-3xl font-semibold">
@@ -75,7 +76,7 @@ export default async function Page() {
                 </CardTitle>
                 <CardDescription>Total cadastrado</CardDescription>
               </div>
-              <UserIcon className="size-4 text-muted-foreground" />
+              <Users2Icon className="size-4 text-muted-foreground" />
             </CardHeader>
             <CardContent className="flex items-end justify-between">
               <div className="text-3xl font-semibold">
