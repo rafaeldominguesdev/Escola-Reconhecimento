@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Mail, Phone, User, Users, Image as ImageIcon, School2, BadgeInfo } from "lucide-react"
 
@@ -14,6 +14,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { cn } from "@/lib/utils"
+
+const TURMAS_CONFIG = [
+  {
+    id: "ef1",
+    label: "Fund. 1",
+    anos: ["1º Ano", "2º Ano", "3º Ano", "4º Ano", "5º Ano"],
+  },
+  {
+    id: "ef2",
+    label: "Fund. 2",
+    anos: ["6º Ano", "7º Ano", "8º Ano", "9º Ano"],
+  },
+  {
+    id: "em",
+    label: "E. Médio",
+    anos: ["1º Ano", "2º Ano", "3º Ano"],
+  },
+]
+
+const SALAS = ["A", "B", "C", "D"]
 
 export default function NovoAlunoPage() {
   const router = useRouter()
@@ -21,6 +42,21 @@ export default function NovoAlunoPage() {
   const [nome, setNome] = useState("")
   const [turma, setTurma] = useState("")
   const [matricula, setMatricula] = useState("")
+
+  // Estados para seleção de turma
+  const [nivelSel, setNivelSel] = useState<string | null>(null)
+  const [anoSel, setAnoSel] = useState<string | null>(null)
+  const [salaSel, setSalaSel] = useState<string | null>(null)
+
+  // Sincronizar turma automaticamente
+  useEffect(() => {
+    if (nivelSel && anoSel && salaSel) {
+      const nivelLabel = TURMAS_CONFIG.find(n => n.id === nivelSel)?.label
+      setTurma(`${anoSel} ${salaSel} ${nivelLabel}`)
+    } else {
+      setTurma("")
+    }
+  }, [nivelSel, anoSel, salaSel])
 
   const [nomeResp, setNomeResp] = useState("")
   const [telefone, setTelefone] = useState("")
@@ -163,13 +199,72 @@ export default function NovoAlunoPage() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Turma</label>
-                <Input
-                  placeholder="Ex: 1A, 2B, 3C"
-                  value={turma}
-                  onChange={(e) => setTurma(e.target.value)}
-                />
+              <div className="space-y-4 md:col-span-2 border-t pt-4">
+                <label className="text-sm font-semibold uppercase text-muted-foreground flex items-center gap-2">
+                  <School2 className="size-4" />
+                  Turma (Nível / Ano / Sala)
+                </label>
+                
+                <div className="flex flex-col gap-4">
+                  {/* Seleção de Nível */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    {TURMAS_CONFIG.map((config) => (
+                      <Button
+                        key={config.id}
+                        type="button"
+                        variant={nivelSel === config.id ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => {
+                          setNivelSel(config.id)
+                          setAnoSel(null)
+                          setSalaSel(null)
+                        }}
+                        className="h-8 rounded-full"
+                      >
+                        {config.label}
+                      </Button>
+                    ))}
+                  </div>
+
+                  {/* Seleção de Ano */}
+                  {nivelSel && (
+                    <div className="flex flex-wrap items-center gap-2 animate-in fade-in slide-in-from-left-2 duration-300">
+                      {TURMAS_CONFIG.find(n => n.id === nivelSel)?.anos.map((ano) => (
+                        <Button
+                          key={ano}
+                          type="button"
+                          variant={anoSel === ano ? "secondary" : "ghost"}
+                          size="sm"
+                          onClick={() => {
+                            setAnoSel(ano)
+                            setSalaSel(null)
+                          }}
+                          className="h-8 rounded-full"
+                        >
+                          {ano}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Seleção de Sala */}
+                  {anoSel && (
+                    <div className="flex flex-wrap items-center gap-2 animate-in fade-in slide-in-from-left-2 duration-300">
+                      {SALAS.map((sala) => (
+                        <Button
+                          key={sala}
+                          type="button"
+                          variant={salaSel === sala ? "secondary" : "outline"}
+                          size="sm"
+                          onClick={() => setSalaSel(sala)}
+                          className="h-8 w-8 p-0 rounded-full"
+                        >
+                          {sala}
+                        </Button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="space-y-2">
