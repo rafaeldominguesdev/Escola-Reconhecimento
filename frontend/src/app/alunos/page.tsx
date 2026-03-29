@@ -152,16 +152,33 @@ export default function AlunosPage() {
     
     setIsDeleting(true)
     try {
-      // 1. Remover vínculos de responsáveis
+      // 1. Obter IDs dos responsáveis vinculados aos alunos que serão deletados
+      const { data: vinculos } = await supabase
+        .from("aluno_responsavel")
+        .select("responsavel_id")
+        .in("aluno_id", selectedIds)
+      
+      const responsavelIds = [...new Set(vinculos?.map(v => v.responsavel_id) || [])]
+
+      // 2. Remover vínculos de responsáveis
       await supabase.from("aluno_responsavel").delete().in("aluno_id", selectedIds)
       
-      // 2. Remover registros de acesso
+      // 3. Remover registros de acesso
       await supabase.from("registros").delete().in("aluno_id", selectedIds)
       
-      // 3. Remover os alunos
-      const { error } = await supabase.from("alunos").delete().in("id", selectedIds)
+      // 4. Remover os alunos
+      const { error: errorAlunos } = await supabase.from("alunos").delete().in("id", selectedIds)
       
-      if (error) throw error
+      if (errorAlunos) throw errorAlunos
+
+      // 5. Novo: Deletar o registro de Responsável agora (Direto, sem checar outros filhos)
+      if (responsavelIds.length > 0) {
+        const { error: errorResp } = await supabase.from("responsaveis").delete().in("id", responsavelIds)
+        if (errorResp) {
+          console.error("Erro ao deletar responsáveis:", errorResp)
+          alert("O aluno foi deletado, mas não conseguimos remover o responsável do banco de dados automaticamente: " + errorResp.message + "\n\nIsso geralmente acontece por falta de permissão no Supabase (RLS).")
+        }
+      }
       
       // Atualizar lista local
       setAlunos(prev => prev.filter(a => !selectedIds.includes(a.id)))

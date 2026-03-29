@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
-import { SearchIcon } from "lucide-react"
+import { SearchIcon, Trash2, AlertTriangle } from "lucide-react"
 
 import { supabase } from "@/lib/supabase"
 import { Input } from "@/components/ui/input"
@@ -20,6 +20,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 type Responsavel = {
   id: number
@@ -34,31 +43,35 @@ export default function ResponsaveisPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [search, setSearch] = useState("")
+  
+  // Estados para Deleção
+  const [responsavelParaDeletar, setResponsavelParaDeletar] = useState<Responsavel | null>(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
-    async function carregarResponsaveis() {
-      setLoading(true)
-      setError("")
-
-      const { data, error } = await supabase
-        .from("responsaveis")
-        .select("id, nome, telefone, email, created_at")
-        .order("created_at", { ascending: false })
-
-      if (error) {
-        console.error(error)
-        setError("Erro ao carregar responsáveis.")
-        setResponsaveis([])
-        setLoading(false)
-        return
-      }
-
-      setResponsaveis(data || [])
-      setLoading(false)
-    }
-
     carregarResponsaveis()
   }, [])
+
+  async function carregarResponsaveis() {
+    setLoading(true)
+    setError("")
+
+    const { data, error } = await supabase
+      .from("responsaveis")
+      .select("id, nome, telefone, email, created_at")
+      .order("created_at", { ascending: false })
+
+    if (error) {
+      console.error(error)
+      setError("Erro ao carregar responsáveis.")
+      setResponsaveis([])
+      setLoading(false)
+      return
+    }
+
+    setResponsaveis(data || [])
+    setLoading(false)
+  }
 
   const responsaveisFiltrados = useMemo(() => {
     const termo = search.trim().toLowerCase()
@@ -79,6 +92,33 @@ export default function ResponsaveisPage() {
       )
     })
   }, [responsaveis, search])
+
+  async function handleDelete() {
+    if (!responsavelParaDeletar) return
+    
+    setIsDeleting(true)
+    try {
+      // 1. Remover vínculos primeiro (caso ainda existam)
+      await supabase.from("aluno_responsavel").delete().eq("responsavel_id", responsavelParaDeletar.id)
+      
+      // 2. Remover o responsável
+      const { error } = await supabase.from("responsaveis").delete().eq("id", responsavelParaDeletar.id)
+      
+      if (error) {
+        console.error(error)
+        alert(`Erro ao excluir responsável: ${error.message}. Isso pode ser um problema de permissão no banco de dados.`)
+        return
+      }
+      
+      setResponsaveis(prev => prev.filter(r => r.id !== responsavelParaDeletar.id))
+      setResponsavelParaDeletar(null)
+    } catch (err) {
+      console.error(err)
+      alert("Ocorreu um erro inesperado ao tentar excluir.")
+    } finally {
+      setIsDeleting(false)
+    }
+  }
 
   function formatarData(data: string | null) {
     if (!data) return "-"
@@ -139,6 +179,7 @@ export default function ResponsaveisPage() {
                     <TableHead>Telefone</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Criado em</TableHead>
+                    <TableHead className="w-[100px]">Ações</TableHead>
                   </TableRow>
                 </TableHeader>
 
@@ -150,6 +191,16 @@ export default function ResponsaveisPage() {
                       <TableCell>{responsavel.telefone || "-"}</TableCell>
                       <TableCell>{responsavel.email || "-"}</TableCell>
                       <TableCell>{formatarData(responsavel.created_at)}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:bg-destructive/10"
+                          onClick={() => setResponsavelParaDeletar(responsavel)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -158,6 +209,33 @@ export default function ResponsaveisPage() {
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={!!responsavelParaDeletar} onOpenChange={(open) => !open && setResponsavelParaDeletar(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-destructive">
+              <AlertTriangle className="h-5 w-5" />
+              Confirmar Exclusão
+            </DialogTitle>
+            <DialogDescription>
+              Tem certeza que deseja excluir <strong>{responsavelParaDeletar?.nome}</strong>?
+            </DialogDescription>
+          </DialogHeader>
+
+          <p className="text-sm text-muted-foreground">
+            Se este responsável ainda estiver vinculado a algum aluno, os vínculos serão removidos. Esta ação não pode ser desfeita.
+          </p>
+
+          <DialogFooter className="mt-4">
+            <Button variant="ghost" onClick={() => setResponsavelParaDeletar(null)} disabled={isDeleting}>
+              Cancelar
+            </Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
+              {isDeleting ? "Excluindo..." : "Sim, confirmar exclusão"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

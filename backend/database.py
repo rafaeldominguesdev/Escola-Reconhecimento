@@ -299,6 +299,14 @@ def excluir_aluno(aluno_id: int):
     if not aluno:
         return False, "Aluno não encontrado."
 
+    # 1. Identificar responsáveis vinculados antes da exclusão
+    try:
+        vinculos = supabase.table("aluno_responsavel").select("responsavel_id").eq("aluno_id", aluno_id).execute().data or []
+        responsavel_ids = [v["responsavel_id"] for v in vinculos]
+    except Exception:
+        responsavel_ids = []
+
+    # 2. Remover foto do storage
     foto_path = aluno.get("foto_path")
 
     if foto_path:
@@ -307,8 +315,22 @@ def excluir_aluno(aluno_id: int):
         except Exception:
             pass
 
+    # 3. Remover registros de acesso explicitamente
+    try:
+        supabase.table("registros").delete().eq("aluno_id", aluno_id).execute()
+    except Exception:
+        pass
+
+    # 4. Remover vínculos na tabela aluno_responsavel
+    try:
+        supabase.table("aluno_responsavel").delete().eq("aluno_id", aluno_id).execute()
+    except Exception:
+        pass
+
+    # 5. Remover o registro do aluno
     supabase.table("alunos").delete().eq("id", aluno_id).execute()
 
+    # 6. Remover pasta local de fotos
     pasta_local = os.path.join("fotos", f"aluno_{aluno_id}")
     if os.path.exists(pasta_local):
         try:
@@ -316,7 +338,14 @@ def excluir_aluno(aluno_id: int):
         except Exception:
             pass
 
-    return True, f"Aluno {aluno_id} excluído com sucesso."
+    # 7. Deletar os responsáveis vinculados diretamente
+    for resp_id in responsavel_ids:
+        try:
+            supabase.table("responsaveis").delete().eq("id", resp_id).execute()
+        except Exception:
+            pass
+
+    return True, f"Aluno {aluno.get('nome', aluno_id)} e seu responsável excluídos com sucesso."
 
     # =========================
 # STORAGE
