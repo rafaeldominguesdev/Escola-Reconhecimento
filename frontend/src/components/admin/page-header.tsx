@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { BellIcon, SearchIcon } from "lucide-react"
+import { SearchIcon } from "lucide-react"
 import Link from "next/link"
 import { AlunoSearch } from "@/app/alunos/aluno-search"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -44,10 +44,6 @@ export function PageHeader({
         <AlunoSearch />
 
         {right}
-
-        <Button variant="ghost" size="icon-sm" aria-label="Notificações">
-          <BellIcon className="size-4" />
-        </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
