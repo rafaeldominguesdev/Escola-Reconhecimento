@@ -30,9 +30,6 @@ export function PageHeader({
   return (
     <div className="sticky top-0 z-20 border-b bg-background/80 backdrop-blur supports-backdrop-filter:backdrop-blur-sm">
       <div className="flex items-center gap-3 px-4 py-3">
-        <SidebarTrigger />
-        <Separator orientation="vertical" className="h-6" />
-
         <div className="min-w-0 flex-1">
           <div className="truncate font-heading text-base font-medium">
             {title}
