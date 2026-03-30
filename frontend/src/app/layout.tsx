@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono, Figtree } from "next/font/google"
+import { Geist, Geist_Mono, Figtree, Outfit } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
@@ -8,6 +8,11 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider } from "@/components/theme-provider"
 
 const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" })
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  variable: "--font-brand",
+})
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,7 +43,8 @@ export default function RootLayout({
         geistSans.variable,
         geistMono.variable,
         "font-sans",
-        figtree.variable
+        figtree.variable,
+        outfit.variable
       )}
       suppressHydrationWarning
     >
