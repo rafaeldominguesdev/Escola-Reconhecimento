@@ -71,7 +71,7 @@ export function AlunoSearch() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="h-9 rounded-xl border-border/70 bg-card/60 pl-9 shadow-xs"
-          placeholder="Buscar aluno pelo nome..."
+          placeholder="Buscar aluno..."
         />
       </form>
 
