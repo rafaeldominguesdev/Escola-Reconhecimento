@@ -1,82 +1,132 @@
-# 🏫 Escola Modelo: Sistema de Reconhecimento Facial
+# 🏫 Escola Modelo: Sistema Integrado de Reconhecimento Facial
 
-![Status](https://img.shields.io/badge/Status-Em_Desenvolvimento-blue?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Versão_2.0-blue?style=for-the-badge)
 ![Next.js](https://img.shields.io/badge/Next.js_15-000000?style=for-the-badge&logo=next.js&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![Python](https://img.shields.io/badge/Python_3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
 
-Uma solução completa e estatal para gestão escolar moderna, focada em segurança e automação através de Inteligência Artificial para reconhecimento facial. 
+O **Escola Modelo** é uma infraestrutura de segurança e gestão escolar de ponta, que utiliza **Inteligência Artificial (Visão Computacional)** para automatizar o controle de frequência e segurança de alunos. Com uma arquitetura híbrida (Desktop - Web - Nuvem), o sistema garante precisão, velocidade e uma experiência de usuário premium.
 
-## 🚀 Visão Geral
+---
 
-O projeto **Escola Modelo** integra um painel administrativo intuitivo com um motor de reconhecimento facial em tempo real. Ele permite o controle de entrada e saída de alunos, gerenciamento de turmas, responsáveis e logs de presença, tudo conectado a um backend robusto em Supabase.
+## 🏗️ Arquitetura do Projeto
 
-## ✨ Funcionalidades Principais
+O sistema é dividido em três camadas principais que trabalham em sincronia em tempo real:
 
-*   📸 **Reconhecimento Facial IA**: Identificação automática de alunos e registro instantâneo de presença via webcam.
-*   📊 **Dashboard Administrativo**: Visão 360º de faturamentos, novos alunos e estatísticas diárias via gráficos interativos.
-*   👥 **Gestão de Alunos & Responsáveis**: Cadastro completo com armazenamento de fotos para treinamento do modelo de IA.
-*   📑 **Registros Históricos**: Histórico detalhado de todas as movimentações na escola com filtros por nível, ano e sala.
-*   👤 **Perfil Overlay Premium**: Sistema de gerenciamento de conta via modal centralizado com design 1:1 "Square" moderno.
-*   🌗 **Suporte a Temas**: Alternância dinâmica entre Light e Dark Mode para melhor conforto visual.
-
-## 🛠️ Tech Stack
-
-### Frontend
-- **Framework**: [Next.js 15+](https://nextjs.org/)
-- **Estilização**: [Tailwind CSS 4](https://tailwindcss.com/)
-- **Componentes**: [Shadcn UI](https://ui.shadcn.com/) / Lucide Icons / Recharts
-- **Fonts**: Outfit (Branding) & Figtree (Content)
-
-### Backend & IA
-- **Linguagem**: [Python 3.12+](https://www.python.org/)
-- **Visão Computacional**: OpenCV & `face_recognition`
-- **Banco de Dados**: [Supabase](https://supabase.com/) (PostgreSQL & Realtime)
-
-## ⚙️ Instalação e Configuração
-
-### Pré-requisitos
-- Node.js v20.x ou superior
-- Python 3.12.x ou superior
-- Conta no Supabase
-
-### 1. Configuração do Backend
-```bash
-cd backend
-python -m venv venv
-# Ative o venv (Windows: .\venv\Scripts\activate | Linux: source venv/bin/activate)
-pip install -r requirements.txt
-```
-Configure o arquivo `.env` na pasta `backend`:
-```env
-SUPABASE_URL=seu_url
-SUPABASE_KEY=sua_chave
+```mermaid
+graph TD
+    A[Backend Python - IA] -->|Registra Eventos| B[(Supabase - DB & Storage)]
+    C[Interface Web - Next.js] -->|Consome Dados| B
+    D[Desktop Cadastro - Tkinter] -->|Envia Fotos & Cadastro| B
+    B -->|Logs em Tempo Real| C
 ```
 
-### 2. Configuração do Frontend
-```bash
-cd frontend
-npm install
-```
+### 1. 🖥️ Backend (O Coração da Inteligência)
+Localizado na pasta `/backend`, contém a lógica de processamento e persistência:
 
-## 🏁 Como Executar
+*   **`reconhecimento.py` (O Sentinela)**: 
+    *   Utiliza **OpenCV** e a biblioteca **face_recognition** (baseada em dlib).
+    *   Processa frames da webcam em tempo real com redução de escala (0.25x) para garantir performance em qualquer hardware.
+    *   Implementa um **cooldown inteligente de 30 segundos** por aluno para evitar registros duplicados por erro de detecção continuada.
+    *   Faz a identificação comparando os encodings faciais gerados a partir das fotos locais (`/fotos`).
 
-Para iniciar ambos os serviços simultaneamente, use o script PowerShell na raiz ou o script npm dedicado:
+*   **`database.py` (O Gerenciador de Dados)**:
+    *   Camada de abstração para o **Supabase**.
+    *   Lida com CRUD de alunos, responsáveis e vínculos.
+    *   **Lógica Automática**: Identifica se o aluno está entrando ou saindo baseado no último registro. Se o último registro foi "entrada", o próximo será "saída" automaticamente.
 
-**Via PowerShell:**
+*   **`app_cadastro.py` (Módulo de Onboarding)**:
+    *   Interface Desktop construída em **Tkinter**.
+    *   Captura uma sequência de **10 fotos** do aluno para treinar a precisão da IA.
+    *   Faz o upload automático da foto principal para o **Supabase Storage** e sincroniza os metadados no banco.
+
+---
+
+### 2. 🌐 Frontend (O Centro Administrativo)
+Localizado na pasta `/frontend`, desenvolvido com as tecnologias mais recentes do ecossistema React:
+
+*   **Dashboard Moderno**: Visualização de estatísticas através de gráficos do **Recharts**.
+*   **Gestão de Alunos**: Lista dinâmica com busca avançada e filtros por série/sala.
+*   **Registros de Acesso**: Audit log detalhado de todas as detecções faciais.
+*   **Design System**: 
+    *   Uso de **Tailwind CSS 4** para performance máxima de estilização.
+    *   Componentes **Shadcn UI** customizados com estética de *Glassmorphism*.
+    *   **Square Profile UI**: O novo modal de perfil 1:1, nítido e de alta legibilidade, otimizado para administradores.
+
+---
+
+### 3. ☁️ Nuvem (Persistência & Realtime)
+*   **PostgreSQL**: Armazenamento relacional dos dados.
+*   **Supabase Storage**: Hospedagem das imagens dos alunos com URLs assinadas.
+*   **Realtime**: Sincronização instantânea entre as detecções do Backend e a exibição no Dashboard Web.
+
+---
+
+## 🛠️ Passo a Passo para Instalação
+
+### Configuração Inicial
+1.  **Clone o repositório**:
+    ```bash
+    git clone https://github.com/rafaeldominguesdev/Escola-Reconhecimento
+    cd Escola-Reconhecimento
+    ```
+
+2.  **Configuração do Banco de Dados**:
+    *   Crie um projeto no **Supabase**.
+    *   Execute o schema SQL (tabelas `alunos`, `responsaveis`, `aluno_responsavel`, `registros`).
+    *   Crie um bucket público/privado chamado `fotos-alunos` no Storage.
+
+### Executando o Backend
+1.  Navegue até a pasta: `cd backend`
+2.  Crie o ambiente virtual: `python -m venv venv`
+3.  Ative o ambiente:
+    *   Windows: `.\venv\Scripts\activate`
+    *   Linux/Mac: `source venv/bin/activate`
+4.  Instale as dependências: `pip install -r requirements.txt`
+5.  Crie um arquivo `.env` com suas chaves:
+    ```env
+    SUPABASE_URL=https://sua-url.supabase.co
+    SUPABASE_KEY=sua-chave-anon-public
+    ```
+
+### Executando o Frontend
+1.  Navegue até a pasta: `cd frontend`
+2.  Instale os pacotes: `npm install`
+3.  Crie um arquivo `.env.local` com as mesmas chaves do backend.
+
+---
+
+## 🚀 Como Usar o Sistema
+
+### 1. Iniciar Tudo (Recomendado)
+Na raiz do projeto, execute o script de automação:
 ```powershell
 ./start-all.ps1
 ```
-
-**Via NPM (recomendado):**
+Ou via npm no frontend:
 ```bash
-cd frontend
 npm run dev:all
 ```
 
-## 🎨 Design System
-O projeto utiliza um design system focado em **Harmonia e Nitidez**, com micro-interações suaves, efeito de glassmorphism em modais e uma estética "Perfect UI" que prioriza a experiência do usuário administrador.
+### 2. Fluxo de Operação
+1.  **Cadastrar Aluno**: Abra o `app_cadastro.py`, insira os dados e capture as fotos.
+2.  **Iniciar Monitoramento**: Execute o `reconhecimento.py`. O sistema abrirá a câmera e começará a identificar os rostos.
+3.  **Acompanhar no Web**: Abra o Dashboard no navegador (`localhost:3000`) para ver os registros caindo em tempo real.
 
 ---
-Desenvolvido com ❤️ por [Rafael Fernandes](https://github.com/rafaeldominguesdev)
+
+## 🎨 Estética e Experiência do Usuário (UX)
+
+O projeto segue princípios de **"Perfect UI"**:
+*   **Contraste Elevado**: Fontes e ícones nítidos para visibilidade clara.
+*   **Transições Suaves**: Animações de entrada e hover em todos os cards.
+*   **Respondividade**: O dashboard se adapta a diferentes tamanhos de tela.
+*   **Square Profile**: Um modal de perfil inovador, focado em clareza extrema e design equilibrado.
+
+---
+
+## 📄 Licença
+Este sistema é de uso administrativo exclusivo. Desenvolvido para modernizar a segurança escolar.
+
+**Desenvolvido por [Rafael Fernandes](https://github.com/rafaeldominguesdev)**
