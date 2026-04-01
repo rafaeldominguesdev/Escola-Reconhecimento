@@ -228,7 +228,7 @@ export default function AlunosPage() {
                     }}
                     className={cn(
                       "h-9 px-4 text-sm font-medium transition-all duration-200 rounded-lg",
-                      !nivelAtivo ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                      !nivelAtivo ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                     )}
                   >
                     Todos
@@ -245,7 +245,7 @@ export default function AlunosPage() {
                       }}
                       className={cn(
                         "h-9 px-4 text-sm font-medium transition-all duration-200 rounded-lg",
-                        nivelAtivo === config.id ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                        nivelAtivo === config.id ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                       )}
                     >
                       {config.label}
@@ -270,7 +270,7 @@ export default function AlunosPage() {
                         }}
                         className={cn(
                           "h-9 px-4 text-sm font-medium transition-all duration-200 rounded-lg",
-                          anoAtivo === ano ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                          anoAtivo === ano ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                         )}
                       >
                         {ano}
@@ -293,7 +293,7 @@ export default function AlunosPage() {
                         onClick={() => setSalaAtiva(salaAtiva === sala ? null : sala)}
                         className={cn(
                           "h-9 w-10 p-0 text-sm font-medium transition-all duration-200 rounded-lg",
-                          salaAtiva === sala ? "bg-background text-foreground shadow-sm hover:bg-background shadow-red-500/10" : "text-muted-foreground hover:text-foreground"
+                          salaAtiva === sala ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                         )}
                       >
                         {sala}

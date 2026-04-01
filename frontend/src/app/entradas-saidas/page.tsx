@@ -177,7 +177,7 @@ export default function EntradasSaidasPage() {
                 onClick={() => setTipoFiltro("todos")}
                 className={cn(
                   "h-9 px-5 text-sm font-medium transition-all duration-200 rounded-lg",
-                  tipoFiltro === "todos" ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                  tipoFiltro === "todos" ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 Todos
@@ -188,7 +188,7 @@ export default function EntradasSaidasPage() {
                 onClick={() => setTipoFiltro("entrada")}
                 className={cn(
                   "h-9 px-5 text-sm font-medium transition-all duration-200 rounded-lg",
-                  tipoFiltro === "entrada" ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                  tipoFiltro === "entrada" ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 Entrada
@@ -199,7 +199,7 @@ export default function EntradasSaidasPage() {
                 onClick={() => setTipoFiltro("saida")}
                 className={cn(
                   "h-9 px-5 text-sm font-medium transition-all duration-200 rounded-lg",
-                  tipoFiltro === "saida" ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                  tipoFiltro === "saida" ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 Saída

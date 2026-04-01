@@ -223,7 +223,7 @@ export default function NovoAlunoPage() {
                           }}
                           className={cn(
                             "h-9 px-4 text-sm font-medium transition-all duration-200 rounded-lg",
-                            nivelSel === config.id ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                            nivelSel === config.id ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                           )}
                         >
                           {config.label}
@@ -249,7 +249,7 @@ export default function NovoAlunoPage() {
                             }}
                             className={cn(
                               "h-9 px-4 text-sm font-medium transition-all duration-200 rounded-lg",
-                              anoSel === ano ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                              anoSel === ano ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                             )}
                           >
                             {ano}
@@ -273,7 +273,7 @@ export default function NovoAlunoPage() {
                             onClick={() => setSalaSel(sala)}
                             className={cn(
                               "h-9 w-10 p-0 text-sm font-medium transition-all duration-200 rounded-lg",
-                              salaSel === sala ? "bg-background text-foreground shadow-sm hover:bg-background" : "text-muted-foreground hover:text-foreground"
+                              salaSel === sala ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                             )}
                           >
                             {sala}
