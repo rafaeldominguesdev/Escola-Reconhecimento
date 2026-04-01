@@ -69,6 +69,7 @@ export function AppSidebar() {
 
   const isActive = React.useCallback(
     (href: string) => {
+      if (!pathname) return false
       if (href === "/") return pathname === "/"
       return pathname === href || pathname.startsWith(`${href}/`)
     },
@@ -83,12 +84,12 @@ export function AppSidebar() {
         <SidebarHeader className="p-4 group-data-[collapsible=icon]:p-2 transition-all">
           {/* Layout quando Expandido */}
           <div className="flex items-center justify-between group-data-[collapsible=icon]:hidden">
-            <div className="flex items-center gap-3 overflow-hidden">
-              <div className="flex aspect-square size-11 items-center justify-center rounded-lg text-primary">
+            <div className="flex items-center gap-2 overflow-hidden">
+              <div className="flex aspect-square size-11 items-center justify-center rounded-lg text-primary bg-primary/5">
                 <ScanFaceIcon className="size-8" />
               </div>
-              <div className="flex flex-col justify-center leading-none">
-                <span className="font-brand font-bold text-lg tracking-tight text-primary">
+              <div className="flex flex-col justify-center leading-none overflow-hidden">
+                <span className="font-brand font-bold text-[11px] tracking-tighter text-primary uppercase whitespace-nowrap opacity-80">
                   Escola Modelo
                 </span>
               </div>
@@ -108,10 +109,10 @@ export function AppSidebar() {
         </SidebarHeader>
 
         <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Menu</SidebarGroupLabel>
+          <SidebarGroup className="px-3">
+            <SidebarGroupLabel className="px-2 text-[10px] uppercase font-bold tracking-widest text-muted-foreground/50">Navegação</SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="gap-1">
                 {navMain.map((item) => {
                   const Icon = item.icon
                   return (
@@ -120,10 +121,11 @@ export function AppSidebar() {
                         asChild
                         isActive={isActive(item.href)}
                         tooltip={item.label}
+                        className="h-11 px-2 rounded-md hover:bg-accent/50 transition-all group-data-[active=true]:bg-accent"
                       >
-                        <Link href={item.href}>
-                          <Icon className="size-4" />
-                          <span>{item.label}</span>
+                        <Link href={item.href} className="flex items-center gap-3">
+                          <Icon className="size-5 text-muted-foreground group-data-[active=true]:text-primary transition-colors" />
+                          <span className="font-medium text-sm tracking-tight">{item.label}</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -134,24 +136,24 @@ export function AppSidebar() {
           </SidebarGroup>
         </SidebarContent>
 
-        <SidebarFooter className="p-4">
+        <SidebarFooter className="p-3">
           <SidebarMenu>
             <SidebarMenuItem>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton
                     size="lg"
-                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-14"
+                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-12 px-2 rounded-lg"
                   >
-                    <Avatar className="size-9 rounded-lg border border-border/50 shadow-sm">
+                    <Avatar className="size-8 rounded-lg border border-border/50 shadow-sm">
                       <AvatarImage src="" />
-                      <AvatarFallback className="bg-primary/10 text-primary font-bold">RF</AvatarFallback>
+                      <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">RF</AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight ml-2 group-data-[collapsible=icon]:hidden">
-                      <span className="truncate font-semibold">Rafael Fernandes</span>
-                      <span className="truncate text-xs text-muted-foreground">@rafaelrfd</span>
+                      <span className="truncate font-bold tracking-tight text-[13px]">Rafael Fernandes</span>
+                      <span className="truncate text-[10px] text-muted-foreground/60 font-semibold uppercase tracking-tighter">Administrador</span>
                     </div>
-                    <ChevronsUpDown className="ml-auto size-4 text-muted-foreground group-data-[collapsible=icon]:hidden" />
+                    <ChevronsUpDown className="ml-auto size-3.5 text-muted-foreground/50 group-data-[collapsible=icon]:hidden" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
