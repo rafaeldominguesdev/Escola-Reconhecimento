@@ -36,16 +36,6 @@ export default async function Page() {
       <PageHeader
         title="Dashboard"
         subtitle="Visão geral do sistema"
-        right={
-          <div className="hidden items-center gap-2 sm:flex">
-            <Button asChild>
-              <Link href="/alunos/novo">
-                <UserRoundPlusIcon className="size-4" />
-                Cadastrar aluno
-              </Link>
-            </Button>
-          </div>
-        }
       />
 
       <main className="flex-1 space-y-4 p-4">
