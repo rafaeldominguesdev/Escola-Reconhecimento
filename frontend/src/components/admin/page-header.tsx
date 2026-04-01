@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
-import { ProfileSheet } from "./profile-sheet"
+import { ProfileDialog } from "./profile-dialog"
 
 export function PageHeader({
   title,
@@ -73,7 +73,7 @@ export function PageHeader({
         </DropdownMenu>
       </div>
 
-      <ProfileSheet open={profileOpen} onOpenChange={setProfileOpen} />
+      <ProfileDialog open={profileOpen} onOpenChange={setProfileOpen} />
     </div>
   )
 }
