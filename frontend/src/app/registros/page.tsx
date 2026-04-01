@@ -132,7 +132,7 @@ export default function RegistrosPage() {
             <CardDescription className="text-sm">Registros de entrada</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-5xl font-bold tracking-tight">{totalEntradas}</div>
+            <div className="text-4xl font-bold tracking-tight">{totalEntradas}</div>
           </CardContent>
         </Card>
 
@@ -142,7 +142,7 @@ export default function RegistrosPage() {
             <CardDescription className="text-sm">Registros de saída</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-5xl font-bold tracking-tight">{totalSaidas}</div>
+            <div className="text-4xl font-bold tracking-tight">{totalSaidas}</div>
           </CardContent>
         </Card>
 
@@ -152,7 +152,7 @@ export default function RegistrosPage() {
             <CardDescription className="text-sm">Soma de todos os registros</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="text-5xl font-bold tracking-tight">{totalGeral}</div>
+            <div className="text-4xl font-bold tracking-tight">{totalGeral}</div>
           </CardContent>
         </Card>
       </div>
