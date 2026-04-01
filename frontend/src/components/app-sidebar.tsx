@@ -18,10 +18,7 @@ import {
   UserIcon,
   UserRoundPlusIcon,
   Users2Icon,
-  Sun,
-  Moon,
 } from "lucide-react"
-import { useTheme } from "next-themes"
 
 import {
   Sidebar,
@@ -66,13 +63,7 @@ const navMain: NavItem[] = [
 
 export function AppSidebar() {
   const pathname = usePathname()
-  const { theme, setTheme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
   const [isProfileOpen, setIsProfileOpen] = React.useState(false)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const isActive = React.useCallback(
     (href: string) => {
@@ -181,25 +172,6 @@ export function AppSidebar() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="my-1.5" />
                   <DropdownMenuGroup className="space-y-1">
-                    {/* Botão de Troca de Tema (Claro/Escuro) */}
-                    {mounted && (
-                      <DropdownMenuItem 
-                        className="rounded-lg px-3 py-2 cursor-pointer transition-colors focus:bg-muted font-medium"
-                        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                      >
-                        {theme === "dark" ? (
-                          <>
-                            <Sun className="mr-2 size-4 text-muted-foreground" />
-                            Modo Claro
-                          </>
-                        ) : (
-                          <>
-                            <Moon className="mr-2 size-4 text-muted-foreground" />
-                            Modo Escuro
-                          </>
-                        )}
-                      </DropdownMenuItem>
-                    )}
                     <DropdownMenuItem 
                       className="rounded-lg px-3 py-2 cursor-pointer transition-colors focus:bg-muted font-medium"
                       onClick={() => setIsProfileOpen(true)}
