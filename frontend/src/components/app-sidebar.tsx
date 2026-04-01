@@ -145,7 +145,7 @@ export function AppSidebar() {
                     size="lg"
                     className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-12 px-2 rounded-lg"
                   >
-                    <Avatar className="size-8 rounded-lg border border-border/50 shadow-sm">
+                    <Avatar className="size-8 rounded-lg">
                       <AvatarImage src="" />
                       <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">RF</AvatarFallback>
                     </Avatar>
