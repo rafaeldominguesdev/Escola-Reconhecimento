@@ -7,11 +7,9 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider } from "@/components/theme-provider"
 
-const figtree = Figtree({ subsets: ["latin"], variable: "--font-sans" })
-
 const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-brand",
+  variable: "--font-sans",
 })
 
 const geistSans = Geist({
@@ -40,11 +38,10 @@ export default function RootLayout({
       className={cn(
         "h-full",
         "antialiased",
-        geistSans.variable,
-        geistMono.variable,
         "font-sans",
-        figtree.variable,
-        outfit.variable
+        outfit.variable,
+        geistSans.variable,
+        geistMono.variable
       )}
       suppressHydrationWarning
     >

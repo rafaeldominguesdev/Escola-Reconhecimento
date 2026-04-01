@@ -5,16 +5,24 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
   ActivityIcon,
+  ChevronRight,
   ClipboardListIcon,
+  ChevronsUpDown,
   GraduationCapIcon,
+  HelpCircleIcon,
+  LayoutDashboardIcon,
   LogOutIcon,
+  PaletteIcon,
   ScanFaceIcon,
   SettingsIcon,
+  UserIcon,
   UserRoundPlusIcon,
   Users2Icon,
+  Sun,
+  Moon,
 } from "lucide-react"
+import { useTheme } from "next-themes"
 
-import { Button } from "@/components/ui/button"
 import {
   Sidebar,
   SidebarContent,
@@ -26,9 +34,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarSeparator,
+  SidebarInset,
   SidebarTrigger,
-  useSidebar,
 } from "@/components/ui/sidebar"
 
 import {
@@ -42,12 +49,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ProfileDialog } from "@/components/admin/profile-dialog"
-import { 
-  ChevronsUpDown, 
-  HelpCircleIcon, 
-  PaletteIcon, 
-  UserIcon 
-} from "lucide-react"
 
 type NavItem = {
   href: string
@@ -65,7 +66,13 @@ const navMain: NavItem[] = [
 
 export function AppSidebar() {
   const pathname = usePathname()
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
   const [isProfileOpen, setIsProfileOpen] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const isActive = React.useCallback(
     (href: string) => {
@@ -75,8 +82,6 @@ export function AppSidebar() {
     },
     [pathname]
   )
-
-  const { state } = useSidebar()
 
   return (
     <>
@@ -176,10 +181,25 @@ export function AppSidebar() {
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator className="my-1.5" />
                   <DropdownMenuGroup className="space-y-1">
-                    <DropdownMenuItem className="rounded-lg px-3 py-2 cursor-pointer transition-colors focus:bg-muted font-medium">
-                      <PaletteIcon className="mr-2 size-4 text-muted-foreground" />
-                      Personalização
-                    </DropdownMenuItem>
+                    {/* Botão de Troca de Tema (Claro/Escuro) */}
+                    {mounted && (
+                      <DropdownMenuItem 
+                        className="rounded-lg px-3 py-2 cursor-pointer transition-colors focus:bg-muted font-medium"
+                        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                      >
+                        {theme === "dark" ? (
+                          <>
+                            <Sun className="mr-2 size-4 text-muted-foreground" />
+                            Modo Claro
+                          </>
+                        ) : (
+                          <>
+                            <Moon className="mr-2 size-4 text-muted-foreground" />
+                            Modo Escuro
+                          </>
+                        )}
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem 
                       className="rounded-lg px-3 py-2 cursor-pointer transition-colors focus:bg-muted font-medium"
                       onClick={() => setIsProfileOpen(true)}
@@ -187,9 +207,14 @@ export function AppSidebar() {
                       <UserIcon className="mr-2 size-4 text-muted-foreground" />
                       Perfil
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="rounded-lg px-3 py-2 cursor-pointer transition-colors focus:bg-muted font-medium">
-                      <SettingsIcon className="mr-2 size-4 text-muted-foreground" />
-                      Configurações
+                    <DropdownMenuItem 
+                      asChild
+                      className="rounded-lg px-3 py-2 cursor-pointer transition-colors focus:bg-muted font-medium"
+                    >
+                      <Link href="/configuracoes">
+                        <SettingsIcon className="mr-2 size-4 text-muted-foreground" />
+                        Configurações
+                      </Link>
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator className="my-1.5" />
@@ -198,9 +223,14 @@ export function AppSidebar() {
                       <HelpCircleIcon className="mr-2 size-4 text-muted-foreground" />
                       Ajuda
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="rounded-lg px-3 py-2 cursor-pointer transition-colors focus:bg-destructive focus:text-destructive-foreground font-medium text-destructive">
-                      <LogOutIcon className="mr-2 size-4" />
-                      Sair da conta
+                    <DropdownMenuItem 
+                      asChild
+                      className="rounded-lg px-3 py-2 cursor-pointer transition-colors focus:bg-destructive focus:text-destructive-foreground font-medium text-destructive"
+                    >
+                      <Link href="/sair">
+                        <LogOutIcon className="mr-2 size-4" />
+                        Sair da conta
+                      </Link>
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                 </DropdownMenuContent>
@@ -214,4 +244,3 @@ export function AppSidebar() {
     </>
   )
 }
-
