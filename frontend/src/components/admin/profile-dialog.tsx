@@ -25,11 +25,13 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[550px] min-h-[550px] p-0 overflow-hidden border bg-card shadow-2xl rounded-lg flex flex-col justify-between">
-        <DialogHeader className="px-8 pt-10 pb-2 text-center">
-          <DialogTitle className="text-2xl font-brand font-bold tracking-tight">
-            Editar perfil
+      <DialogContent className="sm:max-w-[550px] min-h-[550px] p-0 overflow-hidden border-none bg-card/95 shadow-2xl rounded-2xl flex flex-col justify-between backdrop-blur-xl">
+        <DialogHeader className="px-8 pt-10 pb-6 text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-linear-to-b from-primary/5 to-transparent" />
+          <DialogTitle className="text-2xl font-brand font-bold tracking-tight relative">
+            Editar Perfil
           </DialogTitle>
+          <p className="text-xs text-muted-foreground relative mt-1">Atualize suas informações pessoais e foto.</p>
         </DialogHeader>
 
         <div className="flex flex-col items-center px-10 py-4 space-y-10 flex-1 justify-center">
@@ -58,7 +60,7 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
                   id="display-name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-background border border-border rounded-md px-5 py-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all placeholder:text-muted-foreground shadow-xs"
+                  className="w-full bg-background/50 border border-border/50 rounded-xl px-5 py-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-muted-foreground/50 shadow-xs"
                   placeholder="Seu nome"
                 />
               </div>
@@ -73,7 +75,7 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
                   id="username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
-                  className="w-full bg-background border border-border rounded-md px-5 py-4 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary transition-all placeholder:text-muted-foreground shadow-xs"
+                  className="w-full bg-background/50 border border-border/50 rounded-xl px-5 py-3.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-muted-foreground/50 shadow-xs"
                   placeholder="ex: rafael"
                 />
               </div>
@@ -81,13 +83,13 @@ export function ProfileDialog({ open, onOpenChange }: ProfileDialogProps) {
           </div>
         </div>
 
-        <DialogFooter className="p-6 bg-muted/20 border-t flex items-center justify-end gap-3 rounded-b-lg">
+        <DialogFooter className="p-6 bg-muted/30 border-t border-border/10 flex items-center justify-end gap-3 rounded-b-2xl">
           <DialogClose asChild>
-            <Button variant="ghost" className="h-11 rounded-md px-6 text-sm font-bold hover:bg-muted transition-colors">
+            <Button variant="ghost" className="h-11 rounded-xl px-6 text-sm font-bold hover:bg-muted/50 transition-colors">
               Cancelar
             </Button>
           </DialogClose>
-          <Button className="h-11 rounded-md px-10 text-sm font-bold shadow-md hover:shadow-lg transition-all bg-primary text-primary-foreground hover:opacity-90 active:scale-95">
+          <Button className="h-11 rounded-xl px-10 text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-all bg-primary text-primary-foreground hover:opacity-95 active:scale-95">
             <SaveIcon className="mr-2 size-4" />
             Salvar Alterações
           </Button>

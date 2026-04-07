@@ -12,9 +12,12 @@ import {
   HelpCircleIcon,
   LayoutDashboardIcon,
   LogOutIcon,
+  Monitor,
+  Moon,
   PaletteIcon,
   ScanFaceIcon,
   SettingsIcon,
+  Sun,
   UserIcon,
   UserRoundPlusIcon,
   Users2Icon,
@@ -46,6 +49,9 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ProfileDialog } from "@/components/admin/profile-dialog"
+import { useTheme } from "next-themes"
+import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 type NavItem = {
   href: string
@@ -64,6 +70,12 @@ const navMain: NavItem[] = [
 export function AppSidebar() {
   const pathname = usePathname()
   const [isProfileOpen, setIsProfileOpen] = React.useState(false)
+  const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const isActive = React.useCallback(
     (href: string) => {
@@ -153,58 +165,111 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-xl shadow-2xl border-border bg-card p-2"
+                  className="w-(--radix-dropdown-menu-trigger-width) min-w-64 overflow-hidden rounded-2xl border-border bg-card/95 p-0 shadow-2xl backdrop-blur-xl transition-all"
                   side="top"
                   align="end"
-                  sideOffset={4}
+                  sideOffset={8}
                 >
-                  <DropdownMenuLabel className="p-0 font-normal">
-                    <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                      <Avatar className="h-8 w-8 rounded-lg">
-                        <AvatarImage src="" />
-                        <AvatarFallback className="rounded-lg bg-primary/10 text-primary">RF</AvatarFallback>
-                      </Avatar>
-                      <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-semibold">Rafael Fernandes</span>
-                        <span className="truncate text-xs text-muted-foreground">Administrador</span>
+                  {/* Premium Header */}
+                  <div className="relative overflow-hidden p-4">
+                    <div className="absolute inset-0 bg-linear-to-br from-primary/10 via-transparent to-transparent opacity-50" />
+                    <div className="relative flex items-center gap-3">
+                      <div className="relative">
+                        <Avatar className="h-10 w-10 rounded-xl border-2 border-background shadow-md">
+                          <AvatarImage src="" />
+                          <AvatarFallback className="rounded-lg bg-primary/10 text-primary font-bold">RF</AvatarFallback>
+                        </Avatar>
+                        {/* Status Online Indicator */}
+                        <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 border-background bg-green-500">
+                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+                        </span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold tracking-tight text-foreground">Rafael Fernandes</span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-1.5 py-0.5 rounded-md">ADM</span>
+                          <span className="text-[10px] text-muted-foreground/80 font-medium">rafael@escola.com</span>
+                        </div>
                       </div>
                     </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="my-1.5" />
-                  <DropdownMenuGroup className="space-y-1">
+                  </div>
+
+                  <DropdownMenuSeparator className="m-0" />
+
+                  {/* Quick Settings Section - Theme */}
+                  <div className="bg-muted/30 px-3 py-2.5">
+                    <div className="mb-2 px-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Visual</div>
+                    <div className="flex gap-1">
+                      {[
+                        { id: "light", icon: Sun, label: "Claro" },
+                        { id: "dark", icon: Moon, label: "Escuro" },
+                        { id: "system", icon: Monitor, label: "Auto" },
+                      ].map((t) => (
+                        <Button
+                          key={t.id}
+                          variant={mounted && theme === t.id ? "secondary" : "ghost"}
+                          size="sm"
+                          className={cn(
+                            "h-8 flex-1 gap-1.5 px-0 text-[11px] font-bold",
+                            mounted && theme === t.id ? "bg-background shadow-xs text-primary" : "text-muted-foreground hover:bg-background/50"
+                          )}
+                          onClick={() => setTheme(t.id)}
+                          disabled={!mounted}
+                        >
+                          <t.icon className="size-3.5" />
+                          {t.label}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <DropdownMenuSeparator className="m-0" />
+
+                  <DropdownMenuGroup className="p-1.5 space-y-0.5">
                     <DropdownMenuItem 
-                      className="rounded-lg px-3 py-2 cursor-pointer transition-colors focus:bg-muted font-medium"
+                      className="rounded-lg px-3 py-2.5 cursor-pointer flex items-center justify-between group transition-all focus:bg-accent"
                       onClick={() => setIsProfileOpen(true)}
                     >
-                      <UserIcon className="mr-2 size-4 text-muted-foreground" />
-                      Perfil
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                          <UserIcon className="size-4" />
+                        </div>
+                        <span className="text-sm font-semibold tracking-tight">Meu Perfil</span>
+                      </div>
+                      <ChevronRight className="size-3 text-muted-foreground/30 transition-transform group-hover:translate-x-0.5" />
                     </DropdownMenuItem>
+
                     <DropdownMenuItem 
                       asChild
-                      className="rounded-lg px-3 py-2 cursor-pointer transition-colors focus:bg-muted font-medium"
+                      className="rounded-lg px-3 py-2.5 cursor-pointer flex items-center justify-between group transition-all focus:bg-accent"
                     >
                       <Link href="/configuracoes">
-                        <SettingsIcon className="mr-2 size-4 text-muted-foreground" />
-                        Configurações
+                        <div className="flex items-center gap-2.5">
+                          <div className="flex size-7 items-center justify-center rounded-md bg-orange-500/10 text-orange-500 transition-colors group-hover:bg-orange-500 group-hover:text-white">
+                            <SettingsIcon className="size-4" />
+                          </div>
+                          <span className="text-sm font-semibold tracking-tight">Configurações</span>
+                        </div>
+                        <ChevronRight className="size-3 text-muted-foreground/30 transition-transform group-hover:translate-x-0.5" />
                       </Link>
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
-                  <DropdownMenuSeparator className="my-1.5" />
-                  <DropdownMenuGroup className="space-y-1">
-                    <DropdownMenuItem className="rounded-lg px-3 py-2 cursor-pointer transition-colors focus:bg-muted font-medium">
-                      <HelpCircleIcon className="mr-2 size-4 text-muted-foreground" />
-                      Ajuda
-                    </DropdownMenuItem>
+
+                  <DropdownMenuSeparator className="m-0" />
+
+                  <div className="p-1.5">
                     <DropdownMenuItem 
                       asChild
-                      className="rounded-lg px-3 py-2 cursor-pointer transition-colors focus:bg-destructive focus:text-destructive-foreground font-medium text-destructive"
+                      className="rounded-lg px-3 py-2.5 cursor-pointer flex items-center gap-2.5 group transition-all focus:bg-destructive/10 focus:text-destructive text-muted-foreground"
                     >
                       <Link href="/sair">
-                        <LogOutIcon className="mr-2 size-4" />
-                        Sair da conta
+                        <div className="flex size-7 items-center justify-center rounded-md bg-muted text-muted-foreground group-hover:bg-destructive group-hover:text-white transition-colors">
+                          <LogOutIcon className="size-4" />
+                        </div>
+                        <span className="text-sm font-semibold tracking-tight">Sair da conta</span>
                       </Link>
                     </DropdownMenuItem>
-                  </DropdownMenuGroup>
+                  </div>
                 </DropdownMenuContent>
               </DropdownMenu>
             </SidebarMenuItem>
