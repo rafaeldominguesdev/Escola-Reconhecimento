@@ -245,7 +245,7 @@ export function AppSidebar() {
                     >
                       <Link href="/configuracoes">
                         <div className="flex items-center gap-2.5">
-                          <div className="flex size-7 items-center justify-center rounded-md bg-orange-500/10 text-orange-500 transition-colors group-hover:bg-orange-500 group-hover:text-white">
+                          <div className="flex size-7 items-center justify-center rounded-md bg-red-500/10 text-red-500 transition-colors group-hover:bg-red-500 group-hover:text-white">
                             <SettingsIcon className="size-4" />
                           </div>
                           <span className="text-sm font-semibold tracking-tight">Configurações</span>
