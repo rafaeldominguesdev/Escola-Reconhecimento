@@ -49,6 +49,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ProfileDialog } from "@/components/admin/profile-dialog"
+import { SettingsDialog } from "@/components/admin/settings-dialog"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -70,6 +71,7 @@ const navMain: NavItem[] = [
 export function AppSidebar() {
   const pathname = usePathname()
   const [isProfileOpen, setIsProfileOpen] = React.useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
   const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
@@ -240,18 +242,16 @@ export function AppSidebar() {
                     </DropdownMenuItem>
 
                     <DropdownMenuItem 
-                      asChild
                       className="rounded-lg px-3 py-2.5 cursor-pointer flex items-center justify-between group transition-all focus:bg-accent"
+                      onClick={() => setIsSettingsOpen(true)}
                     >
-                      <Link href="/configuracoes">
-                        <div className="flex items-center gap-2.5">
-                          <div className="flex size-7 items-center justify-center rounded-md bg-red-500/10 text-red-500 transition-colors group-hover:bg-red-500 group-hover:text-white">
-                            <SettingsIcon className="size-4" />
-                          </div>
-                          <span className="text-sm font-semibold tracking-tight">Configurações</span>
+                      <div className="flex items-center gap-2.5">
+                        <div className="flex size-7 items-center justify-center rounded-md bg-red-500/10 text-red-500 transition-colors group-hover:bg-red-500 group-hover:text-white">
+                          <SettingsIcon className="size-4" />
                         </div>
-                        <ChevronRight className="size-3 text-muted-foreground/30 transition-transform group-hover:translate-x-0.5" />
-                      </Link>
+                        <span className="text-sm font-semibold tracking-tight">Configurações</span>
+                      </div>
+                      <ChevronRight className="size-3 text-muted-foreground/30 transition-transform group-hover:translate-x-0.5" />
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
 
@@ -278,6 +278,7 @@ export function AppSidebar() {
       </Sidebar>
 
       <ProfileDialog open={isProfileOpen} onOpenChange={setIsProfileOpen} />
+      <SettingsDialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
     </>
   )
 }
