@@ -169,8 +169,9 @@ export function AppSidebar() {
                 <DropdownMenuContent
                   className="w-(--radix-dropdown-menu-trigger-width) min-w-64 overflow-hidden rounded-2xl border-border bg-card/95 p-0 shadow-2xl backdrop-blur-xl transition-all"
                   side="top"
-                  align="end"
-                  sideOffset={8}
+                  align="start"
+                  sideOffset={12}
+                  alignOffset={8}
                 >
                   {/* Premium Header */}
                   <div className="relative overflow-hidden p-4">
