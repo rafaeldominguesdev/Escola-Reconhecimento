@@ -74,7 +74,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
           </aside>
 
           {/* Conteúdo direita */}
-          <main className="flex-1 overflow-y-auto p-10">
+          <main className="flex-1 overflow-y-auto p-10 bg-background/80">
             {activeSection === "aparencia" && (
               <div className="space-y-6">
                 <div>
