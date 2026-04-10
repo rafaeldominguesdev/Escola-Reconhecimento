@@ -36,7 +36,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[80vw] h-[85vh] p-0 overflow-hidden border-none bg-card/95 shadow-2xl rounded-2xl flex flex-col backdrop-blur-xl gap-0">
+      <DialogContent className="w-[77vw] h-[85vh] p-0 overflow-hidden border-none bg-card/95 shadow-2xl rounded-md flex flex-col backdrop-blur-xl gap-0">
         {/* Visually hidden title for accessibility */}
         <DialogTitle className="sr-only">Configurações</DialogTitle>
 
@@ -101,7 +101,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                             onClick={() => setTheme(t.id)}
                             disabled={!mounted}
                             className={cn(
-                              "flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all text-center",
+                              "flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all text-center",
                               isActive
                                 ? "border-primary bg-primary/5 shadow-sm"
                                 : "border-border/50 hover:border-border hover:bg-muted/50"
@@ -181,7 +181,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                     Informações gerais e diagnóstico do sistema.
                   </p>
                 </div>
-                <div className="rounded-xl border border-border/40 divide-y divide-border/30">
+                <div className="rounded-md border border-border/40 divide-y divide-border/30">
                   {[
                     { label: "Versão", value: "1.0.0-beta" },
                     { label: "Ambiente", value: "Produção" },

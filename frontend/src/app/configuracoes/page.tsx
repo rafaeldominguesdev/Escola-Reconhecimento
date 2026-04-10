@@ -27,7 +27,7 @@ export default function Page() {
       <PageHeader title="Configurações" subtitle="Ajustes do sistema (mock)" />
 
       <main className="flex-1 space-y-4 p-4">
-        <Card>
+        <Card className="rounded-md">
           <CardHeader>
             <CardTitle>Aparência</CardTitle>
             <CardDescription>
