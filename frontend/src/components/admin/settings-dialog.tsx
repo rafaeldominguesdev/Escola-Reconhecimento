@@ -53,14 +53,14 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   key={section.id}
                   onClick={() => setActiveSection(section.id)}
                   className={cn(
-                    "flex items-center gap-3 w-full px-3 py-3 rounded-lg text-sm font-medium transition-all text-left",
+                    "flex items-center gap-3 w-full px-3 py-3 rounded-sm text-sm font-medium transition-all text-left",
                     activeSection === section.id
                       ? "bg-background text-primary shadow-xs font-semibold"
                       : "text-muted-foreground hover:bg-background/60 hover:text-foreground"
                   )}
                 >
                   <div className={cn(
-                    "flex size-8 items-center justify-center rounded-md transition-colors",
+                    "flex size-8 items-center justify-center rounded-sm transition-colors",
                     activeSection === section.id
                       ? "bg-primary/10 text-primary"
                       : "bg-muted text-muted-foreground"

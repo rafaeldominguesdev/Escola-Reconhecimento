@@ -95,7 +95,7 @@ export function AppSidebar() {
           {/* Layout quando Expandido */}
           <div className="flex items-center justify-between group-data-[collapsible=icon]:hidden">
             <div className="flex items-center gap-2 overflow-hidden">
-              <div className="flex aspect-square size-11 items-center justify-center rounded-lg text-primary bg-primary/5">
+              <div className="flex aspect-square size-11 items-center justify-center rounded-[10px] text-primary bg-primary/5">
                 <ScanFaceIcon className="size-8" />
               </div>
               <div className="flex flex-col justify-center leading-none overflow-hidden">
@@ -109,7 +109,7 @@ export function AppSidebar() {
 
           {/* Layout quando modo Ícone (Colapsado) - Troca Logo por Botão no Hover */}
           <div className="hidden group-data-[collapsible=icon]:flex items-center justify-center relative group/sidebar-logo">
-            <div className="flex aspect-square size-11 items-center justify-center rounded-lg text-primary transition-all duration-300 group-hover/sidebar-logo:opacity-0 group-hover/sidebar-logo:scale-75">
+            <div className="flex aspect-square size-11 items-center justify-center rounded-sm text-primary transition-all duration-300 group-hover/sidebar-logo:opacity-0 group-hover/sidebar-logo:scale-75">
               <ScanFaceIcon className="size-8" />
             </div>
             <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/sidebar-logo:opacity-100 transition-all duration-300 transform group-hover/sidebar-logo:scale-110">
@@ -131,7 +131,7 @@ export function AppSidebar() {
                         asChild
                         isActive={isActive(item.href)}
                         tooltip={item.label}
-                        className="h-11 px-2 rounded-md hover:bg-accent/50 transition-all group-data-[active=true]:bg-accent"
+                        className="h-11 px-2 rounded-sm hover:bg-accent/50 transition-all group-data-[active=true]:bg-accent"
                       >
                         <Link href={item.href} className="flex items-center gap-3">
                           <Icon className="size-5 text-muted-foreground group-data-[active=true]:text-primary transition-colors" />
@@ -153,9 +153,9 @@ export function AppSidebar() {
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton
                     size="lg"
-                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-12 px-2 rounded-lg"
+                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-12 px-2 rounded-sm"
                   >
-                    <Avatar className="size-8 rounded-lg">
+                    <Avatar className="size-8 rounded-sm">
                       <AvatarImage src="" />
                       <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">RF</AvatarFallback>
                     </Avatar>
@@ -167,7 +167,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="w-(--radix-dropdown-menu-trigger-width) min-w-64 overflow-hidden rounded-2xl border-border bg-card/95 p-0 shadow-2xl backdrop-blur-xl transition-all"
+                  className="w-(--radix-dropdown-menu-trigger-width) min-w-64 overflow-hidden rounded-md border-border bg-card/95 p-0 shadow-2xl backdrop-blur-xl transition-all"
                   side="top"
                   align="start"
                   sideOffset={12}
@@ -178,9 +178,9 @@ export function AppSidebar() {
                     <div className="absolute inset-0 bg-linear-to-br from-primary/10 via-transparent to-transparent opacity-50" />
                     <div className="relative flex items-center gap-3">
                       <div className="relative">
-                        <Avatar className="h-10 w-10 rounded-xl border-2 border-background shadow-md">
+                        <Avatar className="h-10 w-10 rounded-sm border-2 border-background shadow-md">
                           <AvatarImage src="" />
-                          <AvatarFallback className="rounded-lg bg-primary/10 text-primary font-bold">RF</AvatarFallback>
+                          <AvatarFallback className="rounded-sm bg-primary/10 text-primary font-bold">RF</AvatarFallback>
                         </Avatar>
                         {/* Status Online Indicator */}
                         <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 border-background bg-green-500">
@@ -229,12 +229,12 @@ export function AppSidebar() {
                   <DropdownMenuSeparator className="m-0" />
 
                   <DropdownMenuGroup className="p-1.5 space-y-0.5">
-                    <DropdownMenuItem 
-                      className="rounded-lg px-3 py-2.5 cursor-pointer flex items-center justify-between group transition-all focus:bg-accent"
+                    <DropdownMenuItem
+                      className="rounded-sm px-3 py-2.5 cursor-pointer flex items-center justify-between group transition-all focus:bg-accent"
                       onClick={() => setIsProfileOpen(true)}
                     >
                       <div className="flex items-center gap-2.5">
-                        <div className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+                        <div className="flex size-7 items-center justify-center rounded-sm bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                           <UserIcon className="size-4" />
                         </div>
                         <span className="text-sm font-semibold tracking-tight">Meu Perfil</span>
@@ -242,12 +242,12 @@ export function AppSidebar() {
                       <ChevronRight className="size-3 text-muted-foreground/30 transition-transform group-hover:translate-x-0.5" />
                     </DropdownMenuItem>
 
-                    <DropdownMenuItem 
-                      className="rounded-lg px-3 py-2.5 cursor-pointer flex items-center justify-between group transition-all focus:bg-accent"
+                    <DropdownMenuItem
+                      className="rounded-sm px-3 py-2.5 cursor-pointer flex items-center justify-between group transition-all focus:bg-accent"
                       onClick={() => setIsSettingsOpen(true)}
                     >
                       <div className="flex items-center gap-2.5">
-                        <div className="flex size-7 items-center justify-center rounded-md bg-red-500/10 text-red-500 transition-colors group-hover:bg-red-500 group-hover:text-white">
+                        <div className="flex size-7 items-center justify-center rounded-sm bg-red-500/10 text-red-500 transition-colors group-hover:bg-red-500 group-hover:text-white">
                           <SettingsIcon className="size-4" />
                         </div>
                         <span className="text-sm font-semibold tracking-tight">Configurações</span>
@@ -259,12 +259,12 @@ export function AppSidebar() {
                   <DropdownMenuSeparator className="m-0" />
 
                   <div className="p-1.5">
-                    <DropdownMenuItem 
+                    <DropdownMenuItem
                       asChild
-                      className="rounded-lg px-3 py-2.5 cursor-pointer flex items-center gap-2.5 group transition-all focus:bg-destructive/10 focus:text-destructive text-muted-foreground"
+                      className="rounded-sm px-3 py-2.5 cursor-pointer flex items-center gap-2.5 group transition-all focus:bg-destructive/10 focus:text-destructive text-muted-foreground"
                     >
                       <Link href="/sair">
-                        <div className="flex size-7 items-center justify-center rounded-md bg-muted text-muted-foreground group-hover:bg-destructive group-hover:text-white transition-colors">
+                        <div className="flex size-7 items-center justify-center rounded-sm bg-muted text-muted-foreground group-hover:bg-destructive group-hover:text-white transition-colors">
                           <LogOutIcon className="size-4" />
                         </div>
                         <span className="text-sm font-semibold tracking-tight">Sair da conta</span>
