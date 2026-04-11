@@ -111,17 +111,17 @@ export default async function Page() {
               <CardTitle>Resumo rápido</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex justify-between rounded-xl border p-3">
+              <div className="flex justify-between rounded-md border p-3">
                 <span>Alunos</span>
                 <Badge>{data.totalAlunos}</Badge>
               </div>
 
-              <div className="flex justify-between rounded-xl border p-3">
+              <div className="flex justify-between rounded-md border p-3">
                 <span>Responsáveis</span>
                 <Badge>{data.totalResponsaveis}</Badge>
               </div>
 
-              <div className="flex justify-between rounded-xl border p-3">
+              <div className="flex justify-between rounded-md border p-3">
                 <span>Registros hoje</span>
                 <Badge>{data.registrosHoje}</Badge>
               </div>
