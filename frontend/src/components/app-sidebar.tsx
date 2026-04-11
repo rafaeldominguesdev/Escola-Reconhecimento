@@ -36,6 +36,7 @@ import {
   SidebarMenuItem,
   SidebarInset,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar"
 
 import {
@@ -73,6 +74,7 @@ export function AppSidebar() {
   const [isProfileOpen, setIsProfileOpen] = React.useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
   const { theme, setTheme } = useTheme()
+  const { state } = useSidebar()
   const [mounted, setMounted] = React.useState(false)
 
   React.useEffect(() => {
@@ -120,7 +122,7 @@ export function AppSidebar() {
 
         <SidebarContent>
           <SidebarGroup className="px-3">
-            <SidebarGroupLabel className="px-2 text-[10px] uppercase font-bold tracking-widest text-muted-foreground/50">Navegação</SidebarGroupLabel>
+
             <SidebarGroupContent>
               <SidebarMenu className="gap-1">
                 {navMain.map((item) => {
@@ -129,9 +131,9 @@ export function AppSidebar() {
                     <SidebarMenuItem key={item.href}>
                       <SidebarMenuButton
                         asChild
-                        isActive={isActive(item.href)}
+                        isActive={state !== "collapsed" && isActive(item.href)}
                         tooltip={item.label}
-                        className="h-11 px-2 rounded-sm hover:bg-accent/50 transition-all group-data-[active=true]:bg-accent"
+                        className="h-11 px-2 rounded-sm hover:bg-accent/50 transition-all data-[active=true]:bg-accent"
                       >
                         <Link href={item.href} className="flex items-center gap-3">
                           <Icon className="size-5 text-muted-foreground group-data-[active=true]:text-primary transition-colors" />
