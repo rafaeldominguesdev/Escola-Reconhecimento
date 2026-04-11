@@ -91,7 +91,7 @@ export function AppSidebar() {
   return (
     <>
       <Sidebar variant="inset" collapsible="icon">
-        <SidebarHeader className="p-4 group-data-[collapsible=icon]:p-2 transition-all">
+        <SidebarHeader className="p-4 group-data-[collapsible=icon]:p-2 transition-all duration-500 ease-in-out">
           {/* Layout quando Expandido */}
           <div className="flex items-center justify-between group-data-[collapsible=icon]:hidden">
             <div className="flex items-center gap-2 overflow-hidden">
@@ -109,10 +109,10 @@ export function AppSidebar() {
 
           {/* Layout quando modo Ícone (Colapsado) - Troca Logo por Botão no Hover */}
           <div className="hidden group-data-[collapsible=icon]:flex items-center justify-center relative group/sidebar-logo">
-            <div className="flex aspect-square size-11 items-center justify-center rounded-sm text-primary transition-all duration-300 group-hover/sidebar-logo:opacity-0 group-hover/sidebar-logo:scale-75">
+            <div className="flex aspect-square size-11 items-center justify-center rounded-sm text-primary transition-all duration-500 ease-in-out group-hover/sidebar-logo:opacity-0 group-hover/sidebar-logo:scale-75">
               <ScanFaceIcon className="size-8" />
             </div>
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/sidebar-logo:opacity-100 transition-all duration-300 transform group-hover/sidebar-logo:scale-110">
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/sidebar-logo:opacity-100 transition-all duration-500 ease-in-out transform group-hover/sidebar-logo:scale-110">
               <SidebarTrigger className="size-11 bg-accent hover:bg-accent/80" />
             </div>
           </div>
