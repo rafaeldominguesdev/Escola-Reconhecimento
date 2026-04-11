@@ -19,3 +19,4 @@ frontend/out/
 # Outros
 .DS_Store
 Thumbs.db
+.antigravity-rules.md
