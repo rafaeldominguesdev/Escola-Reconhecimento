@@ -168,11 +168,11 @@ export default function NovoAlunoPage() {
   }
 
   return (
-    <div className="space-y-6 p-6">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Cadastrar aluno</h1>
-        <p className="text-sm text-muted-foreground">
-          Preencha os dados do aluno, responsável e foto para criar um novo cadastro.
+    <div className="max-w-7xl mx-auto space-y-8 p-6">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">Cadastrar aluno</h1>
+        <p className="text-muted-foreground">
+          Preencha os dados do aluno, responsável e foto para criar um novo registro no sistema.
         </p>
       </div>
 
@@ -205,16 +205,16 @@ export default function NovoAlunoPage() {
                   Turma (Nível / Ano / Sala)
                 </label>
                 
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-5 pt-2">
                   {/* Seleção de Nível */}
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground w-12 text-right">Nível:</span>
-                    <div className="inline-flex items-center gap-1.5 p-1 bg-muted/50 rounded-xl border border-border/40 shadow-inner">
+                  <div className="flex flex-col gap-3">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 ml-1">Nível de Ensino</span>
+                    <div className="flex flex-wrap gap-2">
                       {TURMAS_CONFIG.map((config) => (
                         <Button
                           key={config.id}
                           type="button"
-                          variant={nivelSel === config.id ? "secondary" : "ghost"}
+                          variant={nivelSel === config.id ? "secondary" : "outline"}
                           size="sm"
                           onClick={() => {
                             setNivelSel(config.id)
@@ -222,8 +222,8 @@ export default function NovoAlunoPage() {
                             setSalaSel(null)
                           }}
                           className={cn(
-                            "h-9 px-4 text-sm font-medium transition-all duration-200 rounded-lg",
-                            nivelSel === config.id ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
+                            "h-10 px-6 text-sm font-semibold transition-all rounded-md",
+                            nivelSel === config.id ? "bg-primary text-primary-foreground shadow-sm ring-1 ring-primary" : "text-muted-foreground hover:bg-muted"
                           )}
                         >
                           {config.label}
@@ -234,22 +234,22 @@ export default function NovoAlunoPage() {
 
                   {/* Seleção de Ano */}
                   {nivelSel && (
-                    <div className="flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-left-2 duration-300">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground w-12 text-right">Ano:</span>
-                      <div className="inline-flex items-center gap-1.5 p-1 bg-muted/50 rounded-xl border border-border/40 shadow-inner">
+                    <div className="flex flex-col gap-3 animate-in fade-in slide-in-from-left-2 duration-300">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 ml-1">Ano / Série</span>
+                      <div className="flex flex-wrap gap-2">
                         {TURMAS_CONFIG.find(n => n.id === nivelSel)?.anos.map((ano) => (
                           <Button
                             key={ano}
                             type="button"
-                            variant={anoSel === ano ? "secondary" : "ghost"}
+                            variant={anoSel === ano ? "secondary" : "outline"}
                             size="sm"
                             onClick={() => {
                               setAnoSel(ano)
                               setSalaSel(null)
                             }}
                             className={cn(
-                              "h-9 px-4 text-sm font-medium transition-all duration-200 rounded-lg",
-                              anoSel === ano ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
+                              "h-10 px-5 text-sm font-semibold transition-all rounded-md",
+                              anoSel === ano ? "bg-primary text-primary-foreground shadow-sm ring-1 ring-primary" : "text-muted-foreground hover:bg-muted"
                             )}
                           >
                             {ano}
@@ -261,19 +261,19 @@ export default function NovoAlunoPage() {
 
                   {/* Seleção de Sala */}
                   {anoSel && (
-                    <div className="flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-left-2 duration-300">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground w-12 text-right">Sala:</span>
-                      <div className="inline-flex items-center gap-1.5 p-1 bg-muted/50 rounded-xl border border-border/40 shadow-inner">
+                    <div className="flex flex-col gap-3 animate-in fade-in slide-in-from-left-2 duration-300">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 ml-1">Sala / Turma</span>
+                      <div className="flex flex-wrap gap-2">
                         {SALAS.map((sala) => (
                           <Button
                             key={sala}
                             type="button"
-                            variant={salaSel === sala ? "secondary" : "ghost"}
+                            variant={salaSel === sala ? "secondary" : "outline"}
                             size="sm"
                             onClick={() => setSalaSel(sala)}
                             className={cn(
-                              "h-9 w-10 p-0 text-sm font-medium transition-all duration-200 rounded-lg",
-                              salaSel === sala ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
+                              "h-10 w-12 p-0 text-sm font-semibold transition-all rounded-md",
+                              salaSel === sala ? "bg-primary text-primary-foreground shadow-sm ring-1 ring-primary" : "text-muted-foreground hover:bg-muted"
                             )}
                           >
                             {sala}
@@ -359,12 +359,12 @@ export default function NovoAlunoPage() {
             </CardHeader>
 
             <CardContent className="space-y-4">
-              <div className="rounded-xl border border-dashed p-4">
-                <div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
-                  <BadgeInfo className="size-4" />
+              <div className="rounded-md border border-dashed p-4 bg-muted/30">
+                <div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
+                  <BadgeInfo className="size-3.5" />
                   Arquivo atual
                 </div>
-                <p className="truncate text-sm font-medium">{fotoNome}</p>
+                <p className="truncate text-sm font-semibold text-foreground/80">{fotoNome}</p>
               </div>
 
               <div className="space-y-2">
@@ -424,9 +424,9 @@ export default function NovoAlunoPage() {
             </div>
           )}
 
-          <div className="flex flex-col gap-3">
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading ? "Salvando cadastro..." : "Cadastrar aluno"}
+          <div className="flex flex-col gap-3 pt-2">
+            <Button type="submit" disabled={loading} size="lg" className="w-full text-sm font-bold shadow-lg shadow-black/20">
+              {loading ? "Salvando cadastro..." : "Finalizar cadastro"}
             </Button>
 
             <Button
