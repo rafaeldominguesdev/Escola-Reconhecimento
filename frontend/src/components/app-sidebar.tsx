@@ -167,107 +167,74 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="w-(--radix-dropdown-menu-trigger-width) min-w-64 overflow-hidden rounded-xl border-border bg-card/95 p-0 shadow-2xl backdrop-blur-xl"
+                  className="w-(--radix-dropdown-menu-trigger-width) min-w-60 overflow-hidden rounded-xl border-border bg-card/95 p-0 shadow-2xl backdrop-blur-xl"
                   side="top"
                   align="start"
                   sideOffset={12}
                   alignOffset={8}
                 >
-                  {/* Premium Header */}
-                  <div className="relative overflow-hidden p-4">
-                    <div className="absolute inset-0 bg-linear-to-br from-primary/10 via-transparent to-transparent opacity-50" />
-                    <div className="relative flex items-center gap-3">
-                      <div className="relative">
-                        <Avatar className="h-10 w-10 rounded-sm border-2 border-background shadow-md">
-                          <AvatarImage src="" />
-                          <AvatarFallback className="rounded-sm bg-primary/10 text-primary font-bold">RF</AvatarFallback>
-                        </Avatar>
-                        {/* Status Online Indicator */}
-                        <span className="absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border-2 border-background bg-green-500">
-                          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-                        </span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold tracking-tight text-foreground">Rafael Fernandes</span>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-1.5 py-0.5 rounded-md">ADM</span>
-                          <span className="text-[10px] text-muted-foreground/80 font-medium">rafael@escola.com</span>
-                        </div>
-                      </div>
+                  {/* Minimalist Header */}
+                  <div className="flex items-center gap-3 p-5 pb-4">
+                    <Avatar className="h-9 w-9 rounded-full">
+                      <AvatarImage src="" />
+                      <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">RF</AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-semibold tracking-tight text-foreground">Rafael Fernandes</span>
+                      <span className="text-xs text-muted-foreground/80 font-medium">Administrador</span>
                     </div>
                   </div>
 
-                  <DropdownMenuSeparator className="m-0" />
+                  <DropdownMenuSeparator className="mx-0" />
 
-                  {/* Quick Settings Section - Theme */}
-                  <div className="bg-muted/30 px-3 py-2.5">
-                    <div className="mb-2 px-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">Visual</div>
-                    <div className="flex gap-1">
-                      {[
-                        { id: "light", icon: Sun, label: "Claro" },
-                        { id: "dark", icon: Moon, label: "Escuro" },
-                        { id: "system", icon: Monitor, label: "Auto" },
-                      ].map((t) => (
-                        <Button
-                          key={t.id}
-                          variant={mounted && theme === t.id ? "secondary" : "ghost"}
-                          size="sm"
-                          className={cn(
-                            "h-8 flex-1 gap-1.5 px-0 text-[11px] font-bold",
-                            mounted && theme === t.id ? "bg-background shadow-xs text-primary" : "text-muted-foreground hover:bg-background/50"
-                          )}
-                          onClick={() => setTheme(t.id)}
-                          disabled={!mounted}
-                        >
-                          <t.icon className="size-3.5" />
-                          {t.label}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <DropdownMenuSeparator className="m-0" />
-
-                  <DropdownMenuGroup className="p-1.5 space-y-0.5">
+                  <DropdownMenuGroup className="p-1.5 pt-2">
                     <DropdownMenuItem
-                      className="rounded-sm px-3 py-2.5 cursor-pointer flex items-center justify-between group transition-all focus:bg-accent"
+                      className="rounded-lg px-3 py-3.5 cursor-pointer flex items-center justify-between group transition-colors focus:bg-accent"
                       onClick={() => setIsProfileOpen(true)}
                     >
-                      <div className="flex items-center gap-2.5">
-                        <div className="flex size-7 items-center justify-center rounded-sm bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
-                          <UserIcon className="size-4" />
-                        </div>
-                        <span className="text-sm font-semibold tracking-tight">Meu Perfil</span>
+                      <div className="flex items-center gap-3">
+                        <UserIcon className="size-4.5 text-muted-foreground/80 group-hover:text-foreground transition-colors" />
+                        <span className="text-sm font-medium">Perfil</span>
                       </div>
                       <ChevronRight className="size-3 text-muted-foreground/30 transition-transform group-hover:translate-x-0.5" />
                     </DropdownMenuItem>
 
                     <DropdownMenuItem
-                      className="rounded-sm px-3 py-2.5 cursor-pointer flex items-center justify-between group transition-all focus:bg-accent"
+                      className="rounded-lg px-3 py-3.5 cursor-pointer flex items-center justify-between group transition-colors focus:bg-accent"
                       onClick={() => setIsSettingsOpen(true)}
                     >
-                      <div className="flex items-center gap-2.5">
-                        <div className="flex size-7 items-center justify-center rounded-sm bg-red-500/10 text-red-500 transition-colors group-hover:bg-red-500 group-hover:text-white">
-                          <SettingsIcon className="size-4" />
-                        </div>
-                        <span className="text-sm font-semibold tracking-tight">Configurações</span>
+                      <div className="flex items-center gap-3">
+                        <SettingsIcon className="size-4.5 text-muted-foreground/80 group-hover:text-foreground transition-colors" />
+                        <span className="text-sm font-medium">Configurações</span>
                       </div>
                       <ChevronRight className="size-3 text-muted-foreground/30 transition-transform group-hover:translate-x-0.5" />
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
 
-                  <DropdownMenuSeparator className="m-0" />
+                  <DropdownMenuSeparator className="mx-0" />
+
+                  <DropdownMenuGroup className="p-1.5">
+                    <DropdownMenuItem
+                      className="rounded-lg px-3 py-3.5 cursor-pointer flex items-center justify-between group transition-colors focus:bg-accent"
+                    >
+                      <div className="flex items-center gap-3">
+                        <HelpCircleIcon className="size-4.5 text-muted-foreground/80 group-hover:text-foreground transition-colors" />
+                        <span className="text-sm font-medium">Ajuda</span>
+                      </div>
+                      <ChevronRight className="size-3 text-muted-foreground/30 transition-transform group-hover:translate-x-0.5" />
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+
+                  <DropdownMenuSeparator className="mx-0" />
 
                   <div className="p-1.5">
                     <DropdownMenuItem
                       asChild
-                      className="rounded-sm px-3 py-2.5 cursor-pointer flex items-center gap-2.5 group transition-all focus:bg-destructive/10 focus:text-destructive text-muted-foreground"
+                      className="rounded-lg px-3 py-3.5 cursor-pointer flex items-center gap-3 group transition-colors focus:bg-destructive/10 focus:text-destructive"
                     >
                       <Link href="/sair">
-                        <div className="flex size-7 items-center justify-center rounded-sm bg-muted text-muted-foreground group-hover:bg-destructive group-hover:text-white transition-colors">
-                          <LogOutIcon className="size-4" />
-                        </div>
-                        <span className="text-sm font-semibold tracking-tight">Sair da conta</span>
+                        <LogOutIcon className="size-4.5 text-muted-foreground/80 group-hover:text-destructive transition-colors" />
+                        <span className="text-sm font-medium text-muted-foreground group-hover:text-destructive">Sair</span>
                       </Link>
                     </DropdownMenuItem>
                   </div>
