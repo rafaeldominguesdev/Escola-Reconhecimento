@@ -167,7 +167,7 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="w-(--radix-dropdown-menu-trigger-width) min-w-64 overflow-hidden rounded-md border-border bg-card/95 p-0 shadow-2xl backdrop-blur-xl transition-all"
+                  className="w-(--radix-dropdown-menu-trigger-width) min-w-64 overflow-hidden rounded-xl border-border bg-card/95 p-0 shadow-2xl backdrop-blur-xl"
                   side="top"
                   align="start"
                   sideOffset={12}
