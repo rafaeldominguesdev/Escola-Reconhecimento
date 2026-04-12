@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono, Figtree, Outfit } from "next/font/google"
+import { Geist, Geist_Mono, Figtree, Outfit, JetBrains_Mono } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
@@ -22,6 +22,11 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 })
 
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+})
+
 export const metadata: Metadata = {
   title: "Painel Escolar",
   description: "Painel administrativo escolar com reconhecimento facial",
@@ -41,7 +46,8 @@ export default function RootLayout({
         "font-sans",
         outfit.variable,
         geistSans.variable,
-        geistMono.variable
+        geistMono.variable,
+        jetbrainsMono.variable
       )}
       suppressHydrationWarning
     >

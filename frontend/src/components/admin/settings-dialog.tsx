@@ -36,7 +36,7 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[77vw] h-[85vh] p-0 overflow-hidden border-none bg-card/95 shadow-2xl rounded-md flex flex-col backdrop-blur-xl gap-0">
+      <DialogContent className="w-[77vw] h-[85vh] p-0 overflow-hidden border-none bg-card/95 shadow-2xl rounded-md flex flex-col backdrop-blur-xl gap-0 font-mono tracking-tight">
         {/* Visually hidden title for accessibility */}
         <DialogTitle className="sr-only">Configurações</DialogTitle>
 

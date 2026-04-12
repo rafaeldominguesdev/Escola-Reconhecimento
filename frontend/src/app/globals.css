@@ -18,7 +18,7 @@
       "Segoe UI Symbol",
       "Noto Color Emoji"
     );
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-jetbrains-mono, var(--font-geist-mono));
   --font-brand: var(--font-brand);
   --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
