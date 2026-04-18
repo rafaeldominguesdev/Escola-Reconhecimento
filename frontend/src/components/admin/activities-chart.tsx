@@ -39,6 +39,8 @@ export function ActivitiesChart({ data }: { data: ActivityPoint[] }) {
               fill="var(--color-atividades)"
               radius={[8, 8, 0, 0]}
               maxBarSize={40}
+              animationDuration={1500}
+              animationEasing="ease-out"
             />
           </BarChart>
         </ResponsiveContainer>

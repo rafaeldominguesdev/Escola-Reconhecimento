@@ -21,6 +21,15 @@ type ResponsavelResumo = {
   created_at: string | null
 }
 
+interface UltimoRegistroDB {
+  id: number
+  tipo: string
+  data_hora: string
+  alunos: {
+    nome: string
+  } | null
+}
+
 export type DashboardData = {
   totalAlunos: number
   totalResponsaveis: number
@@ -156,15 +165,15 @@ export async function getDashboardData(): Promise<DashboardData> {
     }
   )
 
-  const ultimosRegistros: UltimoRegistro[] = (ultimosRegistrosResult.data || []).map(
-    (item: any) => ({
-      id: String(item.id),
-      tipo: item.tipo || "-",
-      aluno: item.alunos?.nome || "Aluno não encontrado",
-      hora: item.data_hora ? formatHour(item.data_hora) : "-",
-      status: "Registrado",
-    })
-  )
+  const ultimosRegistros: UltimoRegistro[] = (
+    ultimosRegistrosResult.data as unknown as UltimoRegistroDB[] || []
+  ).map((item) => ({
+    id: String(item.id),
+    tipo: item.tipo || "-",
+    aluno: item.alunos?.nome || "Aluno não encontrado",
+    hora: item.data_hora ? formatHour(item.data_hora) : "-",
+    status: "Registrado",
+  }))
 
   const ultimosResponsaveis: ResponsavelResumo[] = (responsaveisListResult.data || []).map(
     (item) => ({

@@ -12,6 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { PageWrapper, AnimatedItem } from "@/components/page-wrapper"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
@@ -198,15 +200,17 @@ export default function AlunosPage() {
   )
 
   return (
-    <div className="space-y-6 p-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Alunos</h1>
-        <p className="text-sm text-muted-foreground">
-          Lista de alunos cadastrados no sistema.
-        </p>
-      </div>
+    <PageWrapper>
+      <div className="space-y-6 p-6">
+        <AnimatedItem>
+          <h1 className="text-2xl font-semibold tracking-tight">Alunos</h1>
+          <p className="text-sm text-muted-foreground">
+            Lista de alunos cadastrados no sistema.
+          </p>
+        </AnimatedItem>
 
-      <Card>
+        <AnimatedItem>
+          <Card>
         <CardHeader className="space-y-4">
           <div>
             <CardTitle>Gerenciamento de alunos</CardTitle>
@@ -227,7 +231,7 @@ export default function AlunosPage() {
                       setSalaAtiva(null)
                     }}
                     className={cn(
-                      "h-9 px-4 text-sm font-medium transition-all duration-200 rounded-lg",
+                      "h-9 px-4 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
                       !nivelAtivo ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                     )}
                   >
@@ -244,7 +248,7 @@ export default function AlunosPage() {
                         setSalaAtiva(null)
                       }}
                       className={cn(
-                        "h-9 px-4 text-sm font-medium transition-all duration-200 rounded-lg",
+                        "h-9 px-4 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
                         nivelAtivo === config.id ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                       )}
                     >
@@ -269,7 +273,7 @@ export default function AlunosPage() {
                           setSalaAtiva(null)
                         }}
                         className={cn(
-                          "h-9 px-4 text-sm font-medium transition-all duration-200 rounded-lg",
+                          "h-9 px-4 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
                           anoAtivo === ano ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                         )}
                       >
@@ -292,7 +296,7 @@ export default function AlunosPage() {
                         size="sm"
                         onClick={() => setSalaAtiva(salaAtiva === sala ? null : sala)}
                         className={cn(
-                          "h-9 w-10 p-0 text-sm font-medium transition-all duration-200 rounded-lg",
+                          "h-9 w-10 p-0 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
                           salaAtiva === sala ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                         )}
                       >
@@ -356,8 +360,11 @@ export default function AlunosPage() {
 
         <CardContent>
           {loading ? (
-            <div className="py-10 text-sm text-muted-foreground">
-              Carregando alunos...
+            <div className="space-y-3 py-4">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
             </div>
           ) : error ? (
             <div className="py-10 text-sm text-red-500">{error}</div>
@@ -416,7 +423,8 @@ export default function AlunosPage() {
             </div>
           )}
         </CardContent>
-      </Card>
+          </Card>
+        </AnimatedItem>
 
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent className="max-w-md">
@@ -463,6 +471,7 @@ export default function AlunosPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </PageWrapper>
   )
 }

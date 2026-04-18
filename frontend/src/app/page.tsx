@@ -10,6 +10,7 @@ import { ActivitiesChart } from "@/components/admin/activities-chart"
 import { PageHeader } from "@/components/admin/page-header"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { PageWrapper, AnimatedItem } from "@/components/page-wrapper"
 import {
   Card,
   CardContent,
@@ -32,15 +33,16 @@ export default async function Page() {
   const data = await getDashboardData()
 
   return (
-    <div className="flex min-h-svh flex-col">
-      <PageHeader
-        title="Dashboard"
-        subtitle="Visão geral do sistema"
-      />
+    <PageWrapper>
+      <div className="flex min-h-svh flex-col">
+        <PageHeader
+          title="Dashboard"
+          subtitle="Visão geral do sistema"
+        />
 
-      <main className="flex-1 space-y-4 p-4">
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          <Card>
+        <main className="flex-1 space-y-4 p-4">
+          <AnimatedItem className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+            <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <div>
                 <CardTitle className="text-sm font-medium">
@@ -93,10 +95,10 @@ export default async function Page() {
               <Badge variant="secondary">hoje</Badge>
             </CardContent>
           </Card>
-        </div>
+          </AnimatedItem>
 
-        <div className="grid gap-4 lg:grid-cols-7">
-          <Card className="lg:col-span-4">
+          <AnimatedItem className="grid gap-4 lg:grid-cols-7">
+            <Card className="lg:col-span-4">
             <CardHeader>
               <CardTitle>Atividade (últimos 7 dias)</CardTitle>
               <CardDescription>Reconhecimentos por dia</CardDescription>
@@ -132,11 +134,11 @@ export default async function Page() {
                 <Link href="/registros">Ver registros</Link>
               </Button>
             </CardContent>
-          </Card>
-        </div>
+            </Card>
+          </AnimatedItem>
 
-        <div className="grid gap-4 lg:grid-cols-2">
-          <Card>
+          <AnimatedItem className="grid gap-4 lg:grid-cols-2">
+            <Card>
             <CardHeader>
               <CardTitle>Últimos responsáveis cadastrados</CardTitle>
               <CardDescription>Dados vindos da tabela responsaveis</CardDescription>
@@ -198,8 +200,9 @@ export default async function Page() {
               </Table>
             </CardContent>
           </Card>
-        </div>
-      </main>
-    </div>
+          </AnimatedItem>
+        </main>
+      </div>
+    </PageWrapper>
   )
 }

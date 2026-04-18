@@ -137,7 +137,7 @@ export function AppSidebar() {
                       >
                         <Link href={item.href} className="flex items-center gap-3">
                           <Icon className="size-5 text-muted-foreground group-data-[active=true]:text-primary transition-colors" />
-                          <span className="font-medium text-sm tracking-tight">{item.label}</span>
+                          <span className="font-heading font-medium text-sm tracking-tight">{item.label}</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>

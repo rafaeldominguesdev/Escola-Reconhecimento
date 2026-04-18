@@ -12,6 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { PageWrapper, AnimatedItem } from "@/components/page-wrapper"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
   TableBody,
@@ -126,15 +128,17 @@ export default function ResponsaveisPage() {
   }
 
   return (
-    <div className="space-y-6 p-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Responsáveis</h1>
-        <p className="text-sm text-muted-foreground">
-          Lista de responsáveis cadastrados no sistema.
-        </p>
-      </div>
+    <PageWrapper>
+      <div className="space-y-6 p-6">
+        <AnimatedItem>
+          <h1 className="text-2xl font-semibold tracking-tight">Responsáveis</h1>
+          <p className="text-sm text-muted-foreground">
+            Lista de responsáveis cadastrados no sistema.
+          </p>
+        </AnimatedItem>
 
-      <Card>
+        <AnimatedItem>
+          <Card>
         <CardHeader className="space-y-4">
           <div>
             <CardTitle>Gerenciamento de responsáveis</CardTitle>
@@ -156,8 +160,10 @@ export default function ResponsaveisPage() {
 
         <CardContent>
           {loading ? (
-            <div className="py-10 text-sm text-muted-foreground">
-              Carregando responsáveis...
+            <div className="space-y-3 py-4">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
             </div>
           ) : error ? (
             <div className="py-10 text-sm text-red-500">{error}</div>
@@ -208,7 +214,8 @@ export default function ResponsaveisPage() {
             </div>
           )}
         </CardContent>
-      </Card>
+          </Card>
+        </AnimatedItem>
 
       <Dialog open={!!responsavelParaDeletar} onOpenChange={(open) => !open && setResponsavelParaDeletar(null)}>
         <DialogContent className="max-w-md">
@@ -236,6 +243,7 @@ export default function ResponsaveisPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </PageWrapper>
   )
 }

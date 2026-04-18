@@ -12,6 +12,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { PageWrapper, AnimatedItem } from "@/components/page-wrapper"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -31,6 +33,17 @@ type Registro = {
   mensagem_enviada: boolean | null
   observacao: string | null
   aluno: string
+}
+
+interface RegistroDB {
+  id: number
+  tipo: string
+  data_hora: string
+  mensagem_enviada: boolean | null
+  observacao: string | null
+  alunos: {
+    nome: string
+  } | null
 }
 
 export default function RegistrosPage() {
@@ -67,7 +80,7 @@ export default function RegistrosPage() {
         return
       }
 
-      const registrosFormatados: Registro[] = (data || []).map((item: any) => ({
+      const registrosFormatados: Registro[] = (data as unknown as RegistroDB[] || []).map((item) => ({
         id: item.id,
         tipo: item.tipo,
         data_hora: item.data_hora,
@@ -117,47 +130,49 @@ export default function RegistrosPage() {
   }
 
   return (
-    <div className="space-y-6 p-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Registros</h1>
-        <p className="text-sm text-muted-foreground">
-          Histórico unificado de entradas e saídas dos alunos.
-        </p>
-      </div>
+    <PageWrapper>
+      <div className="space-y-6 p-6">
+        <AnimatedItem>
+          <h1 className="text-2xl font-semibold tracking-tight">Registros</h1>
+          <p className="text-sm text-muted-foreground">
+            Histórico unificado de entradas e saídas dos alunos.
+          </p>
+        </AnimatedItem>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card className="border-border/40 shadow-sm transition-all hover:shadow-md">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-bold uppercase tracking-wider text-muted-foreground">Total de entradas</CardTitle>
-            <CardDescription className="text-sm">Registros de entrada</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold tracking-tight">{totalEntradas}</div>
-          </CardContent>
-        </Card>
+        <AnimatedItem className="grid gap-4 md:grid-cols-3">
+          <Card className="border-border/40 shadow-sm transition-all hover:shadow-md">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-bold uppercase tracking-wider text-muted-foreground">Total de entradas</CardTitle>
+              <CardDescription className="text-sm">Registros de entrada</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-bold tracking-tight">{totalEntradas}</div>
+            </CardContent>
+          </Card>
 
-        <Card className="border-border/40 shadow-sm transition-all hover:shadow-md">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-bold uppercase tracking-wider text-muted-foreground">Total de saídas</CardTitle>
-            <CardDescription className="text-sm">Registros de saída</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold tracking-tight">{totalSaidas}</div>
-          </CardContent>
-        </Card>
+          <Card className="border-border/40 shadow-sm transition-all hover:shadow-md">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-bold uppercase tracking-wider text-muted-foreground">Total de saídas</CardTitle>
+              <CardDescription className="text-sm">Registros de saída</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-bold tracking-tight">{totalSaidas}</div>
+            </CardContent>
+          </Card>
 
-        <Card className="border-border/40 shadow-sm bg-accent/20 transition-all hover:shadow-md">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-base font-bold uppercase tracking-wider text-muted-foreground">Total geral</CardTitle>
-            <CardDescription className="text-sm">Soma de todos os registros</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-4xl font-bold tracking-tight">{totalGeral}</div>
-          </CardContent>
-        </Card>
-      </div>
+          <Card className="border-border/40 shadow-sm bg-accent/20 transition-all hover:shadow-md">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-bold uppercase tracking-wider text-muted-foreground">Total geral</CardTitle>
+              <CardDescription className="text-sm">Soma de todos os registros</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="text-4xl font-bold tracking-tight">{totalGeral}</div>
+            </CardContent>
+          </Card>
+        </AnimatedItem>
 
-      <Card>
+        <AnimatedItem>
+          <Card>
         <CardHeader className="space-y-4">
           <div>
             <CardTitle>Histórico de registros</CardTitle>
@@ -183,7 +198,7 @@ export default function RegistrosPage() {
                 size="sm"
                 onClick={() => setTipoFiltro("todos")}
                 className={cn(
-                  "h-9 px-5 text-sm font-medium transition-all duration-200 rounded-lg",
+                  "h-9 px-5 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
                   tipoFiltro === "todos" ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -194,7 +209,7 @@ export default function RegistrosPage() {
                 size="sm"
                 onClick={() => setTipoFiltro("entrada")}
                 className={cn(
-                  "h-9 px-5 text-sm font-medium transition-all duration-200 rounded-lg",
+                  "h-9 px-5 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
                   tipoFiltro === "entrada" ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -205,7 +220,7 @@ export default function RegistrosPage() {
                 size="sm"
                 onClick={() => setTipoFiltro("saida")}
                 className={cn(
-                  "h-9 px-5 text-sm font-medium transition-all duration-200 rounded-lg",
+                  "h-9 px-5 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
                   tipoFiltro === "saida" ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
                 )}
               >
@@ -217,8 +232,11 @@ export default function RegistrosPage() {
 
         <CardContent>
           {loading ? (
-            <div className="py-10 text-sm text-muted-foreground">
-              Carregando registros...
+            <div className="space-y-3 py-4">
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
+              <Skeleton className="h-10 w-full" />
             </div>
           ) : error ? (
             <div className="py-10 text-sm text-red-500">{error}</div>
@@ -266,7 +284,9 @@ export default function RegistrosPage() {
             </div>
           )}
         </CardContent>
-      </Card>
-    </div>
+          </Card>
+        </AnimatedItem>
+      </div>
+    </PageWrapper>
   )
 }
