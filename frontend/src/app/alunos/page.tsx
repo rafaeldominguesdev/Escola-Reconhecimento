@@ -238,22 +238,22 @@ export default function AlunosPage() {
                     Todos
                   </Button>
                   {TURMAS_CONFIG.map((config) => (
-                    <Button
-                      key={config.id}
-                      variant={nivelAtivo === config.id ? "secondary" : "ghost"}
-                      size="sm"
-                      onClick={() => {
-                        setNivelAtivo(config.id)
-                        setAnoAtivo(null)
-                        setSalaAtiva(null)
-                      }}
-                      className={cn(
-                        "h-9 px-4 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
-                        nivelAtivo === config.id ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
-                      )}
-                    >
-                      {config.label}
-                    </Button>
+                  <Button
+                    key={config.id}
+                    variant={nivelAtivo === config.id ? "secondary" : "ghost"}
+                    size="sm"
+                    onClick={() => {
+                      setNivelAtivo(config.id)
+                      setAnoAtivo(null)
+                      setSalaAtiva(null)
+                    }}
+                    className={cn(
+                      "h-9 px-4 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
+                      nivelAtivo === config.id ? "bg-accent text-accent-foreground shadow-sm ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
+                    )}
+                  >
+                    {config.label}
+                  </Button>
                   ))}
                 </div>
               </div>

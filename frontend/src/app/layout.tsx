@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono, Figtree, Outfit, JetBrains_Mono, Space_Grotesk } from "next/font/google"
+import { Inter, Playfair_Display } from "next/font/google"
 import "./globals.css"
 import { cn } from "@/lib/utils"
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar"
@@ -7,54 +7,39 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { ThemeProvider } from "@/components/theme-provider"
 
-const outfit = Outfit({
-  subsets: ["latin"],
+const inter = Inter({
   variable: "--font-sans",
-})
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
   subsets: ["latin"],
 })
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const playfair = Playfair_Display({
+  variable: "--font-serif",
   subsets: ["latin"],
 })
 
-const jetbrainsMono = JetBrains_Mono({
-  variable: "--font-jetbrains-mono",
-  subsets: ["latin"],
-})
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space-grotesk",
-})
-
+import { createClient } from "@/utils/supabase/server"
 
 export const metadata: Metadata = {
-  title: "Painel Escolar",
-  description: "Painel administrativo escolar com reconhecimento facial",
+  title: "Acessível Hub | Gestão Escolar",
+  description: "Painel administrativo de alta performance para reconhecimento facial",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
   return (
     <html
       lang="pt-BR"
       className={cn(
         "h-full",
         "antialiased",
-        "font-sans",
-        outfit.variable,
-        geistSans.variable,
-        geistMono.variable,
-        jetbrainsMono.variable,
-        spaceGrotesk.variable
+        inter.variable,
+        playfair.variable
       )}
 
       suppressHydrationWarning
@@ -62,10 +47,16 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <TooltipProvider>
-            <SidebarProvider>
-              <AppSidebar />
-              <SidebarInset>{children}</SidebarInset>
-            </SidebarProvider>
+            {user ? (
+              <SidebarProvider>
+                <AppSidebar />
+                <SidebarInset>{children}</SidebarInset>
+              </SidebarProvider>
+            ) : (
+              <div className="flex-1 flex flex-col">
+                {children}
+              </div>
+            )}
           </TooltipProvider>
         </ThemeProvider>
       </body>
