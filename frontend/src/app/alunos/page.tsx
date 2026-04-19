@@ -15,8 +15,6 @@ import {
 import { PageWrapper, AnimatedItem } from "@/components/page-wrapper"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
 import {
   Table,
   TableBody,

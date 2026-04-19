@@ -1,8 +1,8 @@
 import Link from "next/link"
+import { cn } from "@/lib/utils"
 import {
   ClipboardListIcon,
   GraduationCapIcon,
-  UserRoundPlusIcon,
   Users2Icon,
 } from "lucide-react"
 
@@ -14,11 +14,9 @@ import { PageWrapper, AnimatedItem } from "@/components/page-wrapper"
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
 import {
   Table,
   TableBody,

@@ -12,7 +12,6 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog"
-import { cn } from "@/lib/utils"
 
 interface ProfileDialogProps {
   open: boolean

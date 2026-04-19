@@ -19,7 +19,7 @@ const itemVariants = {
     y: 0,
     filter: "blur(0px)",
     transition: {
-        type: "spring", stiffness: 150, damping: 25, mass: 1
+        type: "spring" as const, stiffness: 150, damping: 25, mass: 1
     },
   },
 }

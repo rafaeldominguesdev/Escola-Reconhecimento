@@ -10,18 +10,12 @@ import {
   ChevronsUpDown,
   GraduationCapIcon,
   HelpCircleIcon,
-  LayoutDashboardIcon,
   LogOutIcon,
-  Monitor,
-  Moon,
-  PaletteIcon,
   ScanFaceIcon,
   SettingsIcon,
-  Sun,
   UserIcon,
   UserRoundPlusIcon,
   Users2Icon,
-  Loader2,
 } from "lucide-react"
 
 import { createClient } from "@/utils/supabase/client"
@@ -37,8 +31,6 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarInset,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar"
 
@@ -47,15 +39,12 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ProfileDialog } from "@/components/admin/profile-dialog"
 import { SettingsDialog } from "@/components/admin/settings-dialog"
-import { useTheme } from "next-themes"
-import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 import { User } from "@supabase/supabase-js"
@@ -81,7 +70,6 @@ export function AppSidebar() {
   const { state } = useSidebar()
   const [user, setUser] = React.useState<User | null>(null)
   const supabase = createClient()
-  const { theme, setTheme } = useTheme()
 
   React.useEffect(() => {
     const getUser = async () => {
