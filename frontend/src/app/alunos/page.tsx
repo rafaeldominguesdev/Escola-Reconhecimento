@@ -1,5 +1,7 @@
 "use client"
 
+import { cn } from "@/lib/utils"
+
 import { useEffect, useMemo, useState } from "react"
 import { SearchIcon, Trash2, AlertTriangle } from "lucide-react"
 

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Monitor, Moon, Sun, Settings2Icon, BellIcon, ShieldIcon, PaletteIcon } from "lucide-react"
-import { useTheme } from "next-themes"
+import { useTheme } from "@/components/theme-provider"
 import {
   Dialog,
   DialogContent,
@@ -87,11 +87,11 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   <div>
                     <p className="text-sm font-semibold mb-3">Tema</p>
                     <div className="grid grid-cols-3 gap-3">
-                      {[
+                      {([
                         { id: "light", icon: Sun, label: "Claro", desc: "Interface clara e limpa" },
                         { id: "dark", icon: Moon, label: "Escuro", desc: "Reduz o cansaço visual" },
                         { id: "system", icon: Monitor, label: "Automático", desc: "Segue o sistema" },
-                      ].map((t) => {
+                      ] as const).map((t) => {
                         const Icon = t.icon
                         const isActive = mounted && theme === t.id
                         return (

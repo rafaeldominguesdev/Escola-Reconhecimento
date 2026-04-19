@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { useTheme } from "next-themes"
+import { useTheme } from "@/components/theme-provider"
 import { Monitor, Moon, Sun } from "lucide-react"
 import { PageWrapper, AnimatedItem } from "@/components/page-wrapper"
 
