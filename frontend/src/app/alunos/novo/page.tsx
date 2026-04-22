@@ -171,52 +171,51 @@ export default function NovoAlunoPage() {
 
   return (
     <PageWrapper>
-      <div className="max-w-7xl mx-auto space-y-8 p-6">
+      <div className="max-w-6xl mx-auto space-y-8 p-6">
         <AnimatedItem>
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight">Cadastrar aluno</h1>
+            <h1 className="text-2xl font-bold tracking-tight">Cadastrar Novo Aluno</h1>
             <p className="text-muted-foreground text-sm">
-              Preencha os dados do aluno, responsável e foto para criar um novo registro no sistema.
+              Preencha os dados do aluno e do responsável para o registro.
             </p>
           </div>
         </AnimatedItem>
 
-        <form onSubmit={handleSubmit} className="grid gap-6 xl:grid-cols-3">
-          <div className="space-y-6 xl:col-span-2">
+        <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-3">
+          <div className="space-y-6 lg:col-span-2">
             <AnimatedItem>
-              <Card className="border-border/40 shadow-sm">
+              <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <User className="size-4.5 text-primary" />
-                    Dados do aluno
+                    <User className="size-4.5" />
+                    Dados do Aluno
                   </CardTitle>
                   <CardDescription>
-                    Informações principais do aluno para cadastro no sistema.
+                    Informações básicas de identificação e turma.
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent className="grid gap-6 md:grid-cols-2">
-                  <div className="space-y-2 md:col-span-2">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">Nome do aluno</label>
+                <CardContent className="grid gap-6">
+                  <div className="space-y-2">
+                    <label className="label-uppercase px-1">Nome Completo</label>
                     <Input
-                      placeholder="Digite o nome completo do aluno"
+                      placeholder="Nome do aluno"
                       value={nome}
                       onChange={(e) => setNome(e.target.value)}
-                      className="bg-muted/30 focus:bg-background transition-colors"
                     />
                   </div>
 
-                  <div className="space-y-4 md:col-span-2 border-t border-border/40 pt-6">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 flex items-center gap-2 mb-2">
+                  <div className="space-y-4 pt-4 border-t border-border">
+                    <label className="label-uppercase px-1 flex items-center gap-2">
                       <School2 className="size-4" />
-                      Turma (Nível / Ano / Sala)
+                      Definição da Turma
                     </label>
                     
-                    <div className="flex flex-col gap-6">
+                    <div className="space-y-6">
                       {/* Seleção de Nível */}
-                      <div className="flex flex-col gap-3">
-                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 ml-1">Nível de Ensino</span>
-                        <div className="flex flex-wrap gap-2.5 p-1 bg-muted/20 rounded-xl border border-border/40 w-fit">
+                      <div className="space-y-3">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 ml-1">Nível de Ensino</span>
+                        <div className="flex flex-wrap gap-2 p-1 bg-muted/40 rounded-lg border border-border w-fit">
                           {TURMAS_CONFIG.map((config) => (
                             <Button
                               key={config.id}
@@ -229,8 +228,8 @@ export default function NovoAlunoPage() {
                                 setSalaSel(null)
                               }}
                               className={cn(
-                                "h-9 px-5 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
-                                nivelSel === config.id ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
+                                "h-9 px-5 text-xs font-bold transition-all rounded-md",
+                                nivelSel === config.id ? "bg-background text-foreground shadow-sm border border-border" : "text-muted-foreground hover:text-foreground"
                               )}
                             >
                               {config.label}
@@ -241,9 +240,9 @@ export default function NovoAlunoPage() {
 
                       {/* Seleção de Ano */}
                       {nivelSel && (
-                        <div className="flex flex-col gap-3 animate-in fade-in slide-in-from-left-2 duration-300">
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 ml-1">Ano / Série</span>
-                          <div className="flex flex-wrap gap-2.5 p-1 bg-muted/20 rounded-xl border border-border/40 w-fit">
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 ml-1">Ano / Série</span>
+                          <div className="flex flex-wrap gap-2 p-1 bg-muted/40 rounded-lg border border-border w-fit">
                             {TURMAS_CONFIG.find(n => n.id === nivelSel)?.anos.map((ano) => (
                               <Button
                                 key={ano}
@@ -255,8 +254,8 @@ export default function NovoAlunoPage() {
                                   setSalaSel(null)
                                 }}
                                 className={cn(
-                                  "h-9 px-5 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
-                                  anoSel === ano ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
+                                  "h-9 px-5 text-xs font-bold transition-all rounded-md",
+                                  anoSel === ano ? "bg-background text-foreground shadow-sm border border-border" : "text-muted-foreground hover:text-foreground"
                                 )}
                               >
                                 {ano}
@@ -268,9 +267,9 @@ export default function NovoAlunoPage() {
 
                       {/* Seleção de Sala */}
                       {anoSel && (
-                        <div className="flex flex-col gap-3 animate-in fade-in slide-in-from-left-2 duration-300">
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/40 ml-1">Sala / Turma</span>
-                          <div className="flex flex-wrap gap-2.5 p-1 bg-muted/20 rounded-xl border border-border/40 w-fit">
+                        <div className="space-y-3">
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 ml-1">Sala</span>
+                          <div className="flex flex-wrap gap-2 p-1 bg-muted/40 rounded-lg border border-border w-fit">
                             {SALAS.map((sala) => (
                               <Button
                                 key={sala}
@@ -279,8 +278,8 @@ export default function NovoAlunoPage() {
                                 size="sm"
                                 onClick={() => setSalaSel(sala)}
                                 className={cn(
-                                  "h-9 w-11 p-0 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
-                                  salaSel === sala ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
+                                  "h-9 w-11 p-0 text-xs font-bold transition-all rounded-md",
+                                  salaSel === sala ? "bg-background text-foreground shadow-sm border border-border" : "text-muted-foreground hover:text-foreground"
                                 )}
                               >
                                 {sala}
@@ -292,13 +291,12 @@ export default function NovoAlunoPage() {
                     </div>
                   </div>
 
-                  <div className="space-y-2 md:col-span-2 pt-2">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">Número da chamada / matrícula</label>
+                  <div className="space-y-2 pt-2">
+                    <label className="label-uppercase px-1">Número da Matrícula</label>
                     <Input
-                      placeholder="Ex: 15 ou 2026001"
+                      placeholder="Identificação opcional"
                       value={matricula}
                       onChange={(e) => setMatricula(e.target.value)}
-                      className="bg-muted/30 focus:bg-background transition-colors"
                     />
                   </div>
                 </CardContent>
@@ -306,35 +304,34 @@ export default function NovoAlunoPage() {
             </AnimatedItem>
 
             <AnimatedItem>
-              <Card className="border-border/40 shadow-sm">
+              <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <Users className="size-4.5 text-primary" />
+                    <Users className="size-4.5" />
                     Responsável
                   </CardTitle>
                   <CardDescription>
-                    Dados do responsável principal do aluno.
+                    Dados de contato do responsável principal.
                   </CardDescription>
                 </CardHeader>
 
                 <CardContent className="grid gap-6 md:grid-cols-2">
                   <div className="space-y-2 md:col-span-2">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">Nome do responsável</label>
+                    <label className="label-uppercase px-1">Nome do Responsável</label>
                     <Input
-                      placeholder="Digite o nome do responsável"
+                      placeholder="Nome completo"
                       value={nomeResp}
                       onChange={(e) => setNomeResp(e.target.value)}
-                      className="bg-muted/30 focus:bg-background transition-colors"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">Telefone</label>
+                    <label className="label-uppercase px-1">Telefone</label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/60" />
                       <Input
-                        className="pl-9 bg-muted/30 focus:bg-background transition-colors"
-                        placeholder="(15) 99999-9999"
+                        className="pl-9"
+                        placeholder="(00) 00000-0000"
                         value={telefone}
                         onChange={(e) => setTelefone(e.target.value)}
                       />
@@ -342,12 +339,12 @@ export default function NovoAlunoPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">E-mail</label>
+                    <label className="label-uppercase px-1">E-mail</label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground/60" />
                       <Input
-                        className="pl-9 bg-muted/30 focus:bg-background transition-colors"
-                        placeholder="responsavel@email.com"
+                        className="pl-9"
+                        placeholder="email@exemplo.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                       />
@@ -360,33 +357,29 @@ export default function NovoAlunoPage() {
 
           <div className="space-y-6">
             <AnimatedItem>
-              <Card className="border-border/40 shadow-sm">
+              <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <ImageIcon className="size-4.5 text-primary" />
-                    Foto do aluno
+                    <ImageIcon className="size-4.5" />
+                    Fotografia
                   </CardTitle>
                   <CardDescription>
-                    Você pode enviar a foto agora ou atualizar depois.
+                    Identificação visual para reconhecimento facial.
                   </CardDescription>
                 </CardHeader>
 
-                <CardContent className="space-y-6">
-                  <div className="rounded-xl border border-dashed border-border/60 p-5 bg-accent/5">
-                    <div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
-                      <BadgeInfo className="size-3.5" />
-                      Arquivo atual
-                    </div>
-                    <p className="truncate text-sm font-heading font-medium text-foreground/80 bg-background/50 p-2 rounded-lg border border-border/20">{fotoNome}</p>
+                <CardContent className="space-y-4">
+                  <div className="rounded-lg border border-border p-4 bg-muted/20">
+                    <p className="truncate text-xs font-medium text-muted-foreground">{fotoNome}</p>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground/80 ml-1">Selecionar foto</label>
+                    <label className="label-uppercase px-1">Carregar Arquivo</label>
                     <Input
                       type="file"
                       accept="image/*"
                       onChange={(e) => setFoto(e.target.files?.[0] || null)}
-                      className="cursor-pointer bg-muted/30 file:text-xs file:font-bold file:uppercase file:tracking-wider file:bg-primary file:text-primary-foreground file:border-0 file:rounded-md file:px-3 file:py-1 file:mr-3 hover:bg-muted/50 transition-colors"
+                      className="cursor-pointer file:text-[10px] file:font-bold file:uppercase file:bg-foreground file:text-background file:border-0 file:rounded file:px-2 file:py-1 file:mr-2"
                     />
                   </div>
                 </CardContent>
@@ -394,27 +387,19 @@ export default function NovoAlunoPage() {
             </AnimatedItem>
 
             <AnimatedItem>
-              <Card className="border-border/40 shadow-sm bg-accent/5 backdrop-blur-sm">
+              <Card className="bg-muted/10">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <School2 className="size-4.5 text-primary" />
-                    Resumo do cadastro
-                  </CardTitle>
-                  <CardDescription>
-                    Confira rapidamente os dados antes de salvar.
-                  </CardDescription>
+                  <CardTitle className="text-base font-bold">Resumo</CardTitle>
                 </CardHeader>
-
                 <CardContent className="space-y-3 pb-6">
                   {[
                     { label: "Aluno", value: nome },
                     { label: "Turma", value: turma },
-                    { label: "Matrícula", value: matricula },
                     { label: "Responsável", value: nomeResp }
                   ].map((item, idx) => (
-                    <div key={idx} className="flex flex-col gap-1 rounded-xl border border-border/40 bg-background/40 p-3 shadow-inner">
-                      <span className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground/60">{item.label}</span>
-                      <span className="font-medium text-[13px] truncate">{item.value || "-"}</span>
+                    <div key={idx} className="flex flex-col gap-0.5 px-1">
+                      <span className="text-[9px] uppercase font-bold text-muted-foreground/60 tracking-wider font-mono">{item.label}</span>
+                      <span className="font-semibold text-xs truncate text-foreground">{item.value || "-"}</span>
                     </div>
                   ))}
                 </CardContent>
@@ -423,13 +408,14 @@ export default function NovoAlunoPage() {
 
             <AnimatedItem className="space-y-4">
               {erro && (
-                <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400 font-medium animate-in zoom-in-95 duration-200">
+                <div className="rounded-lg border border-red-500/20 bg-red-500/5 px-4 py-3 text-xs text-red-500 font-medium">
                   {erro}
                 </div>
               )}
 
               {sucesso && (
-                <div className="rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-400 font-medium animate-in zoom-in-95 duration-200">
+                <div className="rounded-lg border border-foreground/10 bg-muted px-4 py-3 text-xs text-foreground font-bold animate-in zoom-in-95 duration-200 flex items-center gap-2">
+                  <div className="size-1.5 bg-foreground rounded-full" />
                   {sucesso}
                 </div>
               )}
@@ -438,19 +424,18 @@ export default function NovoAlunoPage() {
                 <Button 
                   type="submit" 
                   disabled={loading} 
-                  size="lg" 
-                  className="w-full text-sm font-bold shadow-xl shadow-primary/10 hover:shadow-primary/20 transition-all active:scale-[0.98]"
+                  className="w-full h-11 font-bold"
                 >
-                  {loading ? "Salvando cadastro..." : "Finalizar cadastro"}
+                  {loading ? "Salvando..." : "Confirmar Cadastro"}
                 </Button>
 
                 <Button
                   type="button"
-                  variant="outline"
-                  className="w-full border-border/60 hover:bg-muted/80"
+                  variant="ghost"
+                  className="w-full h-11 font-bold text-muted-foreground"
                   onClick={() => router.push("/alunos")}
                 >
-                  Cancelar
+                  Voltar
                 </Button>
               </div>
             </AnimatedItem>

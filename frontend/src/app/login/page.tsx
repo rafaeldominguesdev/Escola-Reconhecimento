@@ -2,13 +2,22 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { createClient } from "@/utils/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { ScanFaceIcon, Loader2, AlertCircle, ArrowRight, Eye, EyeOff } from "lucide-react"
+import { 
+  ScanFaceIcon, 
+  Loader2, 
+  Mail, 
+  Lock, 
+  Check, 
+  Eye, 
+  EyeOff, 
+  AlertCircle 
+} from "lucide-react"
+import { cn } from "@/lib/utils"
 
 export default function LoginPage() {
   const router = useRouter()
@@ -18,6 +27,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [rememberMe, setRememberMe] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
   async function handleLogin(e: React.FormEvent) {
@@ -32,139 +42,122 @@ export default function LoginPage() {
       })
 
       if (authError) {
-        setError(authError.message === "Invalid login credentials" ? "Credenciais inválidas. Verifique seu e-mail e senha." : authError.message)
+        setError("Credenciais inválidas. Verifique seu e-mail e senha.")
         setLoading(false)
         return
-      }
-
-      if (data.user) {
-        // Verificar se o usuário existe na tabela 'perfis'
-        const { data: profile, error: profileError } = await supabase
-          .from("perfis")
-          .select("role")
-          .eq("id", data.user.id)
-          .single()
-
-        if (profileError || !profile) {
-          // Tentar criar o perfil caso o trigger tenha falhado ou seja um usuário antigo
-          const { error: createError } = await supabase
-            .from("perfis")
-            .insert([
-              { 
-                id: data.user.id, 
-                email: data.user.email, 
-                nome: "Administrador", 
-                role: "admin" 
-              }
-            ])
-
-          if (createError) {
-            console.error("Erro ao criar perfil:", createError)
-            await supabase.auth.signOut()
-            setError("Acesso negado: Perfil não encontrado e não pôde ser criado automaticamente.")
-            setLoading(false)
-            return
-          }
-        }
       }
 
       router.push("/")
       router.refresh()
     } catch (err) {
       console.error(err)
-      setError("Ocorreu um erro inesperado ao realizar o login.")
+      setError("Ocorreu um erro inesperado.")
       setLoading(false)
     }
   }
 
   return (
-    <div className="dark min-h-svh bg-[#050505] flex items-center justify-center p-6 relative overflow-hidden">
-      {/* Dynamic Background Mesh */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-primary/20 blur-[150px] rounded-full animate-mesh" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[150px] rounded-full animate-mesh [animation-delay:4s]" />
-        <div className="absolute top-[30%] left-[20%] w-[30%] h-[30%] bg-primary/5 blur-[100px] rounded-full animate-mesh [animation-delay:2s]" />
+    <div className="dark min-h-svh bg-[#050505] flex flex-col items-center justify-center p-6 antialiased relative overflow-hidden font-sans">
+      
+      {/* --- BACKGROUND AESTHETICS --- */}
+      {/* Animated Mesh Gradients */}
+      <div className="absolute inset-0 z-0 opacity-40 pointer-events-none">
+        <motion.div 
+          animate={{
+            scale: [1, 1.2, 1],
+            x: [0, 100, 0],
+            y: [0, 50, 0],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-[20%] -left-[10%] size-[600px] bg-white/5 blur-[120px] rounded-full"
+        />
+        <motion.div 
+          animate={{
+            scale: [1.2, 1, 1.2],
+            x: [0, -80, 0],
+            y: [0, -100, 0],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="absolute -bottom-[20%] -right-[10%] size-[500px] bg-white/10 blur-[100px] rounded-full"
+        />
       </div>
 
+      {/* Noise Texture Overlay */}
+      <div className="absolute inset-0 z-[1] opacity-[0.03] pointer-events-none mix-blend-overlay" 
+           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} 
+      />
+
+      {/* --- LOGIN CONTENT --- */}
       <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-[440px] z-10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-[420px] z-10"
       >
-        <div className="text-center mb-12 space-y-4">
+        {/* Header/Logo Section */}
+        <div className="flex flex-col items-center mb-10">
           <motion.div
-            initial={{ y: -20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.8 }}
-            className="inline-flex items-center justify-center size-20 rounded-[2rem] bg-black border border-white/10 shadow-2xl relative group"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+            className="size-16 rounded-[1.5rem] bg-zinc-900 border border-white/10 flex items-center justify-center shadow-2xl mb-6 group relative"
           >
-            <div className="absolute inset-0 bg-primary/20 blur-2xl group-hover:bg-primary/40 transition-all rounded-full" />
-            <ScanFaceIcon className="size-10 text-primary relative z-10" />
+            <div className="absolute inset-0 bg-white/20 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity rounded-full" />
+            <ScanFaceIcon className="size-8 text-white/80" />
           </motion.div>
-          
-          <div className="space-y-1">
-            <motion.h1 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="text-4xl font-serif font-black tracking-tight text-white uppercase"
-            >
-              Acessível Hub
-            </motion.h1>
-            <motion.p 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="text-[10px] text-muted-foreground/50 font-black uppercase tracking-[0.4em]"
-            >
-              Gestão Escolar de Elite
-            </motion.p>
+          <div className="text-center space-y-1.5">
+            <h1 className="text-2xl font-bold tracking-tight text-white uppercase">Acessível Hub</h1>
+            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.3em]">Painel de Controle Institucional</p>
           </div>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.8 }}
-        >
-          <Card className="sid-glass sid-glow-border rounded-[2.5rem] border-white/5 shadow-3xl overflow-hidden">
-            <CardHeader className="pt-10 pb-6 text-center">
-              <CardTitle className="text-xl font-serif font-black text-white">Autenticação</CardTitle>
-              <CardDescription className="text-[9px] text-muted-foreground/60 uppercase tracking-[0.3em] font-black">
-                Terminal Administrativo Seguro
-              </CardDescription>
-            </CardHeader>
-            
-            <form onSubmit={handleLogin}>
-              <CardContent className="space-y-6 px-8">
+        {/* Main Card */}
+        <div className="relative group">
+          {/* Subtle Glow Effect */}
+          <div className="absolute -inset-0.5 bg-gradient-to-b from-white/10 to-transparent rounded-[2.5rem] blur opacity-30 group-hover:opacity-50 transition-opacity" />
+          
+          <div className="relative bg-zinc-950/60 backdrop-blur-2xl border border-white/10 rounded-[2.5rem] p-8 lg:p-10 shadow-3xl overflow-hidden">
+            <form onSubmit={handleLogin} className="space-y-6">
+              
+              {/* Error Message */}
+              <AnimatePresence mode="wait">
                 {error && (
                   <motion.div 
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="p-4 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-3 text-[10px] font-black text-red-200 uppercase tracking-widest"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="overflow-hidden"
                   >
-                    <AlertCircle className="size-4 shrink-0" />
-                    {error}
+                    <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4 flex items-center gap-3 text-xs font-medium text-red-200">
+                      <AlertCircle className="size-4 shrink-0" />
+                      {error}
+                    </div>
                   </motion.div>
                 )}
-                
+              </AnimatePresence>
+
+              {/* Form Fields */}
+              <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="label-uppercase px-2">E-mail Corporativo</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="admin@exemplo.com"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="bg-black/40 border-white/10 focus:border-primary/50 focus:ring-primary/20 h-14 rounded-2xl px-5 text-white placeholder:text-muted-foreground/20 transition-all font-medium"
-                  />
+                  <Label htmlFor="email" className="text-[10px] uppercase font-bold tracking-widest text-zinc-500 px-1">Identificação</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-zinc-600 transition-colors group-focus-within:text-white" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="seu@email.com"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="h-12 pl-11 bg-zinc-900/50 border-zinc-800 focus:border-zinc-700 focus:ring-0 rounded-2xl text-sm transition-all"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password" title="Password" className="label-uppercase px-2">Chave de Acesso</Label>
-                  <div className="relative group">
+                  <Label htmlFor="password" className="text-[10px] uppercase font-bold tracking-widest text-zinc-500 px-1">Chave de Segurança</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-zinc-600 transition-colors group-focus-within:text-white" />
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
@@ -172,49 +165,77 @@ export default function LoginPage() {
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="bg-black/40 border-white/10 focus:border-primary/50 focus:ring-primary/20 h-14 rounded-2xl px-5 pr-12 text-white placeholder:text-muted-foreground/20 transition-all font-medium"
+                      className="h-12 pl-11 pr-11 bg-zinc-900/50 border-zinc-800 focus:border-zinc-700 focus:ring-0 rounded-2xl text-sm transition-all"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-5 top-1/2 -translate-y-1/2 text-muted-foreground/30 hover:text-primary transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-white transition-colors"
                     >
                       {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                     </button>
                   </div>
                 </div>
-              </CardContent>
+              </div>
 
-              <CardFooter className="px-8 pt-6 pb-10 flex flex-col gap-6">
+              {/* Utilities */}
+              <div className="flex items-center justify-between px-1">
+                <label className="flex items-center gap-2 cursor-pointer group">
+                  <div className={cn(
+                    "size-4 rounded-md border border-zinc-800 flex items-center justify-center transition-all",
+                    rememberMe ? "bg-white border-white" : "bg-zinc-900 group-hover:border-zinc-700"
+                  )}>
+                    {rememberMe && <Check className="size-2.5 text-black font-bold" />}
+                    <input 
+                      type="checkbox" 
+                      className="hidden" 
+                      checked={rememberMe}
+                      onChange={() => setRememberMe(!rememberMe)}
+                    />
+                  </div>
+                  <span className="text-[11px] font-medium text-zinc-500 group-hover:text-zinc-300 transition-colors">Lembrar-me</span>
+                </label>
+                <button type="button" className="text-[11px] font-medium text-zinc-500 hover:text-white transition-colors underline-offset-4 hover:underline">
+                  Esqueceu a chave?
+                </button>
+              </div>
+
+              {/* Submit Button */}
+              <div className="pt-2">
                 <Button 
                     type="submit" 
-                    className="w-full rounded-2xl h-14 bg-primary text-black font-black uppercase tracking-[0.2em] text-[12px] hover:bg-primary/90 hover:scale-[1.02] active:scale-[0.98] transition-all shadow-2xl shadow-primary/20 flex items-center justify-center gap-3" 
                     disabled={loading}
+                    className="w-full h-12 bg-white text-black hover:bg-zinc-200 font-bold uppercase tracking-widest text-[11px] rounded-2xl transition-all shadow-xl shadow-white/5 flex items-center justify-center group"
                 >
                   {loading ? (
                     <Loader2 className="size-5 animate-spin" />
                   ) : (
-                    <>
-                      Acessar Sistema <ArrowRight className="size-5" />
-                    </>
+                    <span className="flex items-center gap-2">
+                      Entrar no Sistema
+                    </span>
                   )}
                 </Button>
-              </CardFooter>
+              </div>
             </form>
-          </Card>
-        </motion.div>
+          </div>
+        </div>
 
+        {/* Footer info */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
+          transition={{ delay: 1, duration: 1 }}
           className="mt-12 text-center"
         >
-            <p className="text-[9px] text-muted-foreground/20 font-black uppercase tracking-[0.5em]">
-                Criptografia de Ponta a Ponta
-            </p>
+          <p className="text-[9px] font-bold text-zinc-600 uppercase tracking-[0.5em] opacity-40 hover:opacity-100 transition-opacity cursor-default">
+            Terminal Criptografado & Seguro
+          </p>
         </motion.div>
       </motion.div>
+
+      {/* Background Decorative lines */}
+      <div className="absolute top-[10%] left-0 w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" />
+      <div className="absolute bottom-[10%] left-0 w-full h-px bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" />
     </div>
   )
 }

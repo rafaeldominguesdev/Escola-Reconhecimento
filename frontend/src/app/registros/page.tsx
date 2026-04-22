@@ -140,9 +140,9 @@ export default function RegistrosPage() {
         </AnimatedItem>
 
         <AnimatedItem className="grid gap-4 md:grid-cols-3">
-          <Card className="border-border/40 shadow-sm transition-all hover:shadow-md">
+          <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-bold uppercase tracking-wider text-muted-foreground">Total de entradas</CardTitle>
+              <CardTitle className="label-uppercase">Total de entradas</CardTitle>
               <CardDescription className="text-sm">Registros de entrada</CardDescription>
             </CardHeader>
             <CardContent>
@@ -150,9 +150,9 @@ export default function RegistrosPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-border/40 shadow-sm transition-all hover:shadow-md">
+          <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-bold uppercase tracking-wider text-muted-foreground">Total de saídas</CardTitle>
+              <CardTitle className="label-uppercase">Total de saídas</CardTitle>
               <CardDescription className="text-sm">Registros de saída</CardDescription>
             </CardHeader>
             <CardContent>
@@ -160,9 +160,9 @@ export default function RegistrosPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-border/40 shadow-sm bg-accent/20 transition-all hover:shadow-md">
+          <Card className="bg-muted/30">
             <CardHeader className="pb-3">
-              <CardTitle className="text-base font-bold uppercase tracking-wider text-muted-foreground">Total geral</CardTitle>
+              <CardTitle className="label-uppercase">Total geral</CardTitle>
               <CardDescription className="text-sm">Soma de todos os registros</CardDescription>
             </CardHeader>
             <CardContent>
@@ -192,14 +192,14 @@ export default function RegistrosPage() {
               />
             </div>
 
-            <div className="inline-flex items-center gap-1.5 p-1 bg-muted/60 rounded-xl border border-border/40 shadow-inner">
+            <div className="inline-flex items-center gap-1.5 p-1 bg-muted/40 rounded-lg border border-border">
               <Button
                 variant={tipoFiltro === "todos" ? "secondary" : "ghost"}
                 size="sm"
                 onClick={() => setTipoFiltro("todos")}
                 className={cn(
-                  "h-9 px-5 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
-                  tipoFiltro === "todos" ? "bg-accent text-accent-foreground shadow-sm ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
+                  "h-9 px-5 text-xs font-bold transition-all rounded-lg",
+                  tipoFiltro === "todos" ? "bg-muted text-foreground border border-border" : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 Todos
@@ -209,8 +209,8 @@ export default function RegistrosPage() {
                 size="sm"
                 onClick={() => setTipoFiltro("entrada")}
                 className={cn(
-                  "h-9 px-5 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
-                  tipoFiltro === "entrada" ? "bg-accent text-accent-foreground shadow-sm ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
+                  "h-9 px-5 text-xs font-bold transition-all rounded-lg",
+                  tipoFiltro === "entrada" ? "bg-muted text-foreground border border-border" : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 Entrada
@@ -220,8 +220,8 @@ export default function RegistrosPage() {
                 size="sm"
                 onClick={() => setTipoFiltro("saida")}
                 className={cn(
-                  "h-9 px-5 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
-                  tipoFiltro === "saida" ? "bg-accent text-accent-foreground shadow-sm ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
+                  "h-9 px-5 text-xs font-bold transition-all rounded-lg",
+                  tipoFiltro === "saida" ? "bg-muted text-foreground border border-border" : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 Saída

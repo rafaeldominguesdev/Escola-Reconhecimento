@@ -16,7 +16,7 @@ type ActivityPoint = {
 const chartConfig = {
   atividades: {
     label: "Reconhecimentos",
-    color: "#2ECC71",
+    color: "var(--foreground)",
   },
 } satisfies ChartConfig
 
@@ -28,8 +28,8 @@ export function ActivitiesChart({ data }: { data: ActivityPoint[] }) {
           <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="colorAtividades" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#2ECC71" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#2ECC71" stopOpacity={0} />
+                <stop offset="5%" stopColor="var(--foreground)" stopOpacity={0.15} />
+                <stop offset="95%" stopColor="var(--foreground)" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid 
@@ -44,8 +44,8 @@ export function ActivitiesChart({ data }: { data: ActivityPoint[] }) {
               tickMargin={12}
               stroke="var(--muted-foreground)"
               fontSize={10}
-              fontWeight={900}
-              style={{ textTransform: 'uppercase', letterSpacing: '0.2em', fontFamily: 'Inter, sans-serif' }}
+              fontWeight={700}
+              style={{ textTransform: 'uppercase', letterSpacing: '0.1em', fontFamily: 'Inter, sans-serif' }}
             />
             <YAxis 
                hide 
@@ -57,18 +57,15 @@ export function ActivitiesChart({ data }: { data: ActivityPoint[] }) {
             <Area
               type="monotone"
               dataKey="atividades"
-              stroke="#2ECC71"
-              strokeWidth={4}
+              stroke="var(--foreground)"
+              strokeWidth={3}
               fillOpacity={1}
               fill="url(#colorAtividades)"
               animationDuration={1500}
-              style={{
-                filter: "drop-shadow(0 0 12px rgba(46, 204, 113, 0.4))",
-              }}
             />
           </AreaChart>
         </ResponsiveContainer>
       </ChartContainer>
     </div>
   )
-}
+}

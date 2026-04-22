@@ -35,14 +35,14 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[77vw] h-[85vh] p-0 overflow-hidden border-none bg-card/95 shadow-2xl rounded-md flex flex-col backdrop-blur-xl gap-0 font-mono tracking-tight">
+      <DialogContent className="max-w-6xl h-[80vh] p-0 overflow-hidden border-border bg-card shadow-lg rounded-xl flex flex-col gap-0">
         {/* Visually hidden title for accessibility */}
         <DialogTitle className="sr-only">Configurações</DialogTitle>
 
         <div className="flex flex-1 overflow-hidden">
           {/* Sidebar esquerda */}
-          <aside className="w-72 flex-shrink-0 border-r border-border/40 bg-muted/30 flex flex-col py-6 px-3 gap-1">
-            <p className="px-3 mb-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50">
+          <aside className="w-64 flex-shrink-0 border-r border-border bg-muted/40 flex flex-col py-6 px-3 gap-1">
+            <p className="px-3 mb-3 text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">
               Configurações
             </p>
             {sections.map((section) => {
@@ -52,17 +52,17 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                   key={section.id}
                   onClick={() => setActiveSection(section.id)}
                   className={cn(
-                    "flex items-center gap-3 w-full px-3 py-3 rounded-sm text-sm font-medium transition-all text-left",
+                    "flex items-center gap-3 w-full px-3 py-2 rounded-lg text-sm font-medium transition-all text-left",
                     activeSection === section.id
-                      ? "bg-background text-primary shadow-xs font-semibold"
-                      : "text-muted-foreground hover:bg-background/60 hover:text-foreground"
+                      ? "bg-background text-foreground shadow-sm font-bold border border-border"
+                      : "text-muted-foreground hover:bg-background/40 hover:text-foreground"
                   )}
                 >
                   <div className={cn(
-                    "flex size-8 items-center justify-center rounded-sm transition-colors",
+                    "flex size-8 items-center justify-center rounded-md transition-colors",
                     activeSection === section.id
-                      ? "bg-primary/10 text-primary"
-                      : "bg-muted text-muted-foreground"
+                      ? "bg-muted text-foreground"
+                      : "bg-transparent text-muted-foreground"
                   )}>
                     <Icon className="size-4" />
                   </div>
@@ -100,23 +100,23 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
                             onClick={() => setTheme(t.id)}
                             disabled={!mounted}
                             className={cn(
-                              "flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-all text-center",
+                              "flex flex-col items-center gap-2 p-4 rounded-xl border transition-all text-center",
                               isActive
-                                ? "border-primary bg-primary/5 shadow-sm"
-                                : "border-border/50 hover:border-border hover:bg-muted/50"
+                                 ? "border-foreground bg-muted shadow-sm"
+                                 : "border-border hover:border-muted-foreground/30 hover:bg-muted/50"
                             )}
                           >
                             <div className={cn(
                               "flex size-10 items-center justify-center rounded-lg",
-                              isActive ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                              isActive ? "bg-foreground text-background" : "bg-muted text-muted-foreground"
                             )}>
                               <Icon className="size-5" />
                             </div>
                             <div>
-                              <p className={cn("text-xs font-bold", isActive ? "text-primary" : "text-foreground")}>
+                              <p className={cn("text-xs font-bold", isActive ? "text-foreground" : "text-muted-foreground")}>
                                 {t.label}
                               </p>
-                              <p className="text-[10px] text-muted-foreground mt-0.5">{t.desc}</p>
+                              <p className="text-[10px] text-muted-foreground/60 mt-0.5">{t.desc}</p>
                             </div>
                           </button>
                         )

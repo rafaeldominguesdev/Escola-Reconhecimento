@@ -231,8 +231,8 @@ export default function AlunosPage() {
                       setSalaAtiva(null)
                     }}
                     className={cn(
-                      "h-9 px-4 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
-                      !nivelAtivo ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
+                      "h-9 px-4 text-xs font-bold transition-all rounded-lg",
+                      !nivelAtivo ? "bg-muted text-foreground border border-border" : "text-muted-foreground hover:text-foreground"
                     )}
                   >
                     Todos
@@ -248,8 +248,8 @@ export default function AlunosPage() {
                       setSalaAtiva(null)
                     }}
                     className={cn(
-                      "h-9 px-4 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
-                      nivelAtivo === config.id ? "bg-accent text-accent-foreground shadow-sm ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
+                      "h-9 px-4 text-xs font-bold transition-all rounded-lg",
+                      nivelAtivo === config.id ? "bg-muted text-foreground border border-border" : "text-muted-foreground hover:text-foreground"
                     )}
                   >
                     {config.label}
@@ -260,9 +260,9 @@ export default function AlunosPage() {
 
               {/* Filtro de Ano */}
               {nivelAtivo && (
-                <div className="flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-left-2 duration-300">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground w-12 text-right">Ano:</span>
-                  <div className="inline-flex items-center gap-1.5 p-1 bg-muted/50 rounded-xl border border-border/40 shadow-inner">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="label-uppercase w-12 text-right">Ano:</span>
+                  <div className="inline-flex items-center gap-1.5 p-1 bg-muted/40 rounded-lg border border-border">
                     {TURMAS_CONFIG.find(n => n.id === nivelAtivo)?.anos.map((ano) => (
                       <Button
                         key={ano}
@@ -273,8 +273,8 @@ export default function AlunosPage() {
                           setSalaAtiva(null)
                         }}
                         className={cn(
-                          "h-9 px-4 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
-                          anoAtivo === ano ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
+                          "h-9 px-4 text-xs font-bold transition-all rounded-lg",
+                          anoAtivo === ano ? "bg-muted text-foreground border border-border" : "text-muted-foreground hover:text-foreground"
                         )}
                       >
                         {ano}
@@ -286,9 +286,9 @@ export default function AlunosPage() {
 
               {/* Filtro de Sala */}
               {anoAtivo && (
-                <div className="flex flex-wrap items-center gap-3 animate-in fade-in slide-in-from-left-2 duration-300">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground w-12 text-right">Sala:</span>
-                  <div className="inline-flex items-center gap-1.5 p-1 bg-muted/50 rounded-xl border border-border/40 shadow-inner">
+                <div className="flex flex-wrap items-center gap-3">
+                  <span className="label-uppercase w-12 text-right">Sala:</span>
+                  <div className="inline-flex items-center gap-1.5 p-1 bg-muted/40 rounded-lg border border-border">
                     {SALAS.map((sala) => (
                       <Button
                         key={sala}
@@ -296,8 +296,8 @@ export default function AlunosPage() {
                         size="sm"
                         onClick={() => setSalaAtiva(salaAtiva === sala ? null : sala)}
                         className={cn(
-                          "h-9 w-10 p-0 text-sm font-heading font-medium transition-all duration-200 rounded-lg",
-                          salaAtiva === sala ? "bg-accent/80 text-accent-foreground shadow-md shadow-white/10 ring-1 ring-border/50 hover:bg-accent" : "text-muted-foreground hover:text-foreground"
+                          "h-9 w-10 p-0 text-xs font-bold transition-all rounded-lg",
+                          salaAtiva === sala ? "bg-muted text-foreground border border-border" : "text-muted-foreground hover:text-foreground"
                         )}
                       >
                         {sala}

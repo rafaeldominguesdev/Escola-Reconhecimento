@@ -95,11 +95,11 @@ export function AppSidebar() {
           {/* Layout quando Expandido */}
           <div className="flex items-center justify-between group-data-[collapsible=icon]:hidden">
             <div className="flex items-center gap-3 overflow-hidden">
-              <div className="flex aspect-square size-10 items-center justify-center rounded-xl border border-border text-primary bg-primary/5">
-                <ScanFaceIcon className="size-6" />
+              <div className="flex aspect-square size-10 items-center justify-center rounded-lg border border-border bg-muted">
+                <ScanFaceIcon className="size-6 text-foreground" />
               </div>
               <div className="flex flex-col justify-center leading-none overflow-hidden">
-                <span className="label-uppercase tracking-wider">
+                <span className="text-xs font-bold uppercase tracking-widest text-foreground">
                   Acessível Hub
                 </span>
               </div>
@@ -108,15 +108,15 @@ export function AppSidebar() {
 
           {/* Layout quando modo Ícone (Colapsado) */}
           <div className="hidden group-data-[collapsible=icon]:flex items-center justify-center relative">
-            <div className="flex aspect-square size-10 items-center justify-center rounded-xl border border-border text-primary">
-              <ScanFaceIcon className="size-6" />
+            <div className="flex aspect-square size-10 items-center justify-center rounded-lg border border-border bg-muted">
+              <ScanFaceIcon className="size-6 text-foreground" />
             </div>
           </div>
         </SidebarHeader>
 
         <SidebarContent className="px-2">
           <SidebarGroup>
-            <SidebarGroupLabel className="label-uppercase mb-4 px-2">Navigation</SidebarGroupLabel>
+            <SidebarGroupLabel className="label-uppercase mb-4 px-2">Navegação</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu className="gap-1">
                 {navMain.map((item) => {
@@ -128,17 +128,17 @@ export function AppSidebar() {
                         isActive={state !== "collapsed" && isActive(item.href)}
                         tooltip={item.label}
                         className={cn(
-                          "h-9 px-3 rounded-xl border border-transparent transition-all",
+                          "h-9 px-3 rounded-lg border border-transparent transition-all",
                           "hover:bg-muted hover:border-border",
-                          "data-[active=true]:bg-primary data-[active=true]:text-black data-[active=true]:border-primary"
+                          "data-[active=true]:bg-foreground data-[active=true]:text-background"
                         )}
                       >
                         <Link href={item.href} className="flex items-center gap-3">
                           <Icon className={cn(
                             "size-4 transition-colors",
-                            isActive(item.href) ? "text-black" : "text-muted-foreground group-hover:text-primary"
+                            isActive(item.href) ? "text-inherit" : "text-muted-foreground"
                           )} />
-                          <span className="text-xs font-semibold tracking-tight uppercase">{item.label}</span>
+                          <span className="text-xs font-bold tracking-tight">{item.label}</span>
                         </Link>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -157,21 +157,21 @@ export function AppSidebar() {
                 <DropdownMenuTrigger asChild>
                   <SidebarMenuButton
                     size="lg"
-                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-12 px-2 rounded-xl border border-transparent hover:border-border hover:bg-muted"
+                    className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground h-12 px-2 rounded-lg border border-transparent hover:border-border hover:bg-muted"
                   >
-                    <Avatar className="size-8 rounded-xl border border-border">
+                    <Avatar className="size-8 rounded-lg border border-border">
                       <AvatarImage src="" />
-                      <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">RF</AvatarFallback>
+                      <AvatarFallback className="bg-muted text-muted-foreground font-bold text-xs">RF</AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight ml-2 group-data-[collapsible=icon]:hidden">
                       <span className="truncate font-bold tracking-tight text-[13px]">{user?.email?.split('@')[0] || "Usuário"}</span>
-                      <span className="truncate text-[10px] text-muted-foreground/60 font-semibold uppercase tracking-tighter">{user?.email || "Administrador"}</span>
+                      <span className="truncate text-[10px] text-muted-foreground/60 font-medium uppercase tracking-tight">{user?.email || "Administrador"}</span>
                     </div>
                     <ChevronsUpDown className="ml-auto size-3.5 text-muted-foreground/50 group-data-[collapsible=icon]:hidden" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
-                  className="w-(--radix-dropdown-menu-trigger-width) min-w-60 overflow-hidden rounded-xl border-border bg-card/95 p-0 shadow-2xl backdrop-blur-xl"
+                  className="w-(--radix-dropdown-menu-trigger-width) min-w-60 overflow-hidden rounded-lg border-border bg-card p-0 shadow-xl"
                   side="top"
                   align="start"
                   sideOffset={12}
@@ -179,9 +179,9 @@ export function AppSidebar() {
                 >
                   {/* Minimalist Header */}
                   <div className="flex items-center gap-3 p-5 pb-4">
-                    <Avatar className="h-9 w-9 rounded-full">
+                    <Avatar className="h-9 w-9 rounded-full border border-border">
                       <AvatarImage src="" />
-                      <AvatarFallback className="bg-primary/10 text-primary font-bold text-xs">RF</AvatarFallback>
+                      <AvatarFallback className="bg-muted text-muted-foreground font-bold text-xs">RF</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
                       <span className="text-sm font-semibold tracking-tight text-foreground">{user?.email?.split('@')[0] || "Usuário"}</span>
